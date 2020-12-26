@@ -1,11 +1,20 @@
 ﻿namespace com.faith.coreconsole
 {
-
-    public enum LogType
+    public class CoreConsoleEnums
     {
-        Verbose,
-        Info,
-        Error,
-        None
+        public enum PackageStatus
+        {
+            InDevelopment,
+            Production
+        }
+
+        public enum LogType
+        {
+            Verbose,
+            Info,
+            Error,
+            None
+        }
     }
+    
 }

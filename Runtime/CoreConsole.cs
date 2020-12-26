@@ -27,7 +27,7 @@
 
         public static void LogWarning(object message, Color color = new Color(), string prefix = "")
         {
-            if (CoreConsoleConfiguretionFile.GlobalLogType == LogType.Verbose)
+            if (CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Verbose)
             {
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
@@ -50,7 +50,7 @@
 
         public static void LogWarning(object message, Object context, Color color = new Color(), string prefix = "")
         {
-            if (CoreConsoleConfiguretionFile.GlobalLogType == LogType.Verbose)
+            if (CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Verbose)
             {
 
                 string hexColorPrefix = "";
@@ -81,7 +81,7 @@
         public static void Log(object message, Color color = new Color(), string prefix = "")
         {
 
-            if (CoreConsoleConfiguretionFile.GlobalLogType == LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == LogType.Info)
+            if (CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Info)
             {
 
                 string hexColorPrefix = "";
@@ -106,7 +106,7 @@
         public static void Log(object message, Object context, Color color = new Color(), string prefix = "")
         {
 
-            if (CoreConsoleConfiguretionFile.GlobalLogType == LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == LogType.Info)
+            if (CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Info)
             {
 
                 string hexColorPrefix = "";
@@ -137,7 +137,7 @@
         public static void LogError(object message, Color color = new Color(), string prefix = "")
         {
 
-            if (CoreConsoleConfiguretionFile.GlobalLogType == LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == LogType.Info || CoreConsoleConfiguretionFile.GlobalLogType == LogType.Error)
+            if (CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Info || CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Error)
             {
 
                 string hexColorPrefix = "";
@@ -162,7 +162,7 @@
         public static void LogError(object message, Object context, Color color = new Color(), string prefix = "")
         {
 
-            if (CoreConsoleConfiguretionFile.GlobalLogType == LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == LogType.Info || CoreConsoleConfiguretionFile.GlobalLogType == LogType.Error)
+            if (CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Verbose || CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Info || CoreConsoleConfiguretionFile.GlobalLogType == CoreConsoleEnums.LogType.Error)
             {
 
                 string hexColorPrefix = "";

@@ -8,25 +8,26 @@
     using System.Threading.Tasks;
 #endif
 
+    [CreateAssetMenu]
     public class CoreConsoleConfiguretionFile : ScriptableObject
     {
         #region Global
 
-        public static LogType GlobalLogType = LogType.Verbose;
+        public static CoreConsoleEnums.LogType GlobalLogType = CoreConsoleEnums.LogType.Verbose;
 
         #endregion
 
         #region SerializedField
 
-        [SerializeField] private bool _isUsedByCentralGameConfiguretion = false;
-        [SerializeField] private bool _linkWithCentralGameConfiguretion = false;
+        [SerializeField] private bool _isUsedByCentralCoreConsole = false;
+        [SerializeField] private bool _linkWithCentralCoreConsole = false;
 
         [SerializeField] private bool _enableStackTrace;
         [SerializeField, Range(10, 999)] private int _numberOfLog = 100;
         [SerializeField] private LogType _clearLogType;
         [SerializeField] private List<CoreConsole.DebugInfo> _listOfLogInfo = new List<CoreConsole.DebugInfo>();
 
-        [SerializeField] private LogType _logType = LogType.Verbose;
+        [SerializeField] private CoreConsoleEnums.LogType _logType = CoreConsoleEnums.LogType.Verbose;
 
         #endregion
 
@@ -34,18 +35,18 @@
 
 #if UNITY_EDITOR
 
-        public bool EditorAccessIfUsedByCentralGameConfiguretion
+        public bool EditorAccessIfUsedByCentralCoreConsole
         {
             get
             {
-                return _isUsedByCentralGameConfiguretion;
+                return _isUsedByCentralCoreConsole;
             }
         }
-        public bool EditorAccessIfLinkWithCentralGameConfiguretion
+        public bool EditorAccessIfLinkWithCentralCoreConsole
         {
             get
             {
-                return _linkWithCentralGameConfiguretion;
+                return _linkWithCentralCoreConsole;
             }
         }
 
@@ -54,7 +55,7 @@
 #endif
 
         public int NumberOfLog { get { return _listOfLogInfo.Count; } }
-        public LogType logType { get { return _linkWithCentralGameConfiguretion ? GlobalLogType : _logType; } }
+        public CoreConsoleEnums.LogType logType { get { return _linkWithCentralCoreConsole ? GlobalLogType : _logType; } }
 
         public string prefix = "";
         public Color colorForLog = new Color();
@@ -112,7 +113,7 @@
 
             await Task.Delay(100);
 
-            if (_isUsedByCentralGameConfiguretion)
+            if (_isUsedByCentralCoreConsole)
             {
 
                 List<CoreConsoleConfiguretionFile> listOfAsset = new List<CoreConsoleConfiguretionFile>();
@@ -126,9 +127,9 @@
 
                 foreach (CoreConsoleConfiguretionFile gameConfigAsset in listOfAsset)
                 {
-                    if (gameConfigAsset != this && gameConfigAsset.EditorAccessIfUsedByCentralGameConfiguretion)
+                    if (gameConfigAsset != this && gameConfigAsset.EditorAccessIfUsedByCentralCoreConsole)
                     {
-                        _isUsedByCentralGameConfiguretion = false;
+                        _isUsedByCentralCoreConsole = false;
                         break;
                     }
                 }
