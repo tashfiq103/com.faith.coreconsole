@@ -2,6 +2,7 @@
 {
     using UnityEngine;
     using UnityEditor;
+    using System.Collections.Generic;
 
     [CustomEditor(typeof(CoreConsoleConfiguretionFile))]
     public class CoreConsoleConfiguretionFileEditor : CoreConsoleBaseEditorClass
@@ -55,29 +56,93 @@
 
         public override void OnInspectorGUI()
         {
-            CoreConsoleEditorUtility.ShowScriptReference(serializedObject);
-
             serializedObject.Update();
 
-            //Linking With Central Configuretor
-            if (!_sp_isUsedByCentralCoreConsole.boolValue)
+            EditorGUILayout.BeginVertical(GUI.skin.box);
             {
 
-                EditorGUILayout.PropertyField(_sp_linkWithCentralCoreConsole);
+                EditorGUILayout.BeginHorizontal();
+                {
+                    CoreConsoleEditorUtility.ShowScriptReference(serializedObject);
+
+                    EditorGUI.BeginDisabledGroup(_sp_isUsedByCentralCoreConsole.boolValue);
+                    {
+                        if (EditorGUILayout.DropdownButton(EditorGUIUtility.TrTextContent("Advance", "Show advance settings for configuretion file"), FocusType.Passive, EditorStyles.toolbarDropDown, GUILayout.Width(100)))
+                        {
+                            GenericMenu genericMenuForAdvanceOption = new GenericMenu();
+
+                            genericMenuForAdvanceOption.AddItem(
+                                    EditorGUIUtility.TrTextContent("Mark as Production", "It will now be used as central point of all the configuretion file for CoreConsole"),
+                                    _sp_isUsedByCentralCoreConsole.boolValue,
+                                    () =>
+                                    {
+                                        _sp_isUsedByCentralCoreConsole.boolValue = !_sp_isUsedByCentralCoreConsole.boolValue;
+                                        _sp_isUsedByCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+
+                                        _sp_linkWithCentralCoreConsole.boolValue = false;
+                                        _sp_linkWithCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+
+                                        List<CoreConsoleConfiguretionFile> _listOfCoreConsoleConfiguretionFile = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
+                                        foreach (CoreConsoleConfiguretionFile coreConsoleConfiguretionFile in _listOfCoreConsoleConfiguretionFile)
+                                        {
+                                            if (coreConsoleConfiguretionFile == _reference)
+                                            {
+                                                CoreConsoleViewrEditorWindow.productionCoreConsoleAsset = _reference;
+                                            }
+                                            else
+                                            {
+
+                                                SerializedObject newSerializedObject = new SerializedObject(coreConsoleConfiguretionFile);
+                                                SerializedProperty isUsedByCentralCoreConsole = newSerializedObject.FindProperty("_isUsedByCentralCoreConsole");
+                                                isUsedByCentralCoreConsole.boolValue = false;
+                                                isUsedByCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+                                                newSerializedObject.ApplyModifiedProperties();
+                                            }
+                                        }
+                                    }
+                                );
+
+                            genericMenuForAdvanceOption.AddItem(
+                                    EditorGUIUtility.TrTextContent("Override by Production", "Override by the settings by production"),
+                                    _sp_linkWithCentralCoreConsole.boolValue,
+                                    () =>
+                                    {
+                                        _sp_linkWithCentralCoreConsole.boolValue = !_sp_linkWithCentralCoreConsole.boolValue;
+                                        _sp_linkWithCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+                                    }
+                                );
+
+                            genericMenuForAdvanceOption.ShowAsContext();
+                        }
+                    }
+                    EditorGUI.EndDisabledGroup();
+
+                }
+                EditorGUILayout.EndHorizontal();
+
+                if (_sp_isUsedByCentralCoreConsole.boolValue)
+                {
+                    EditorGUILayout.Space();
+                    EditorGUILayout.HelpBox("The following configuretion asset is used in 'CoreConsoleManager'.\nIt can only be revoked if you assigned any other configuretion file for production", MessageType.Info);
+                    EditorGUILayout.Space();
+                }
+                else
+                {
+
+                    if (_sp_linkWithCentralCoreConsole.boolValue)
+                    {
+                        EditorGUILayout.Space();
+                        EditorGUILayout.HelpBox("The following configuretion is now synced with 'CoreConsoleManager'. To make it standalone, unlink it", MessageType.Info);
+                        EditorGUILayout.Space();
+                    }
+                }
+
                 CoreConsoleEditorUtility.DrawHorizontalLine();
-            }
-            else
-            {
 
-                EditorGUILayout.HelpBox("The following configuretion asset is used in 'CoreConsoleManager'.", MessageType.Info);
-                CoreConsoleEditorUtility.DrawHorizontalLine();
             }
+            EditorGUILayout.EndVertical();
 
-            if (_sp_linkWithCentralCoreConsole.boolValue)
-            {
-                EditorGUILayout.HelpBox("The following configuretion is now synced with 'CoreConsoleManager'. To make it standalone, unlink it", MessageType.Info);
-            }
-            else {
+            if(!_sp_linkWithCentralCoreConsole.boolValue) {
 
                 EditorGUILayout.PropertyField(_sp_logType);
                 EditorGUI.indentLevel += 1;
