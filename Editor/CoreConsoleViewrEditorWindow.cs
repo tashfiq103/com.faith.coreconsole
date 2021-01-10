@@ -22,6 +22,7 @@
         private static Editor[] _editorForCoreConsoleAsset;
         private static int _numberOfCoreConsoleAsset;
         private static bool[] _isFoldOut;
+        private static bool _isFoldOutDefaultCoreConsoleAsset;
         private static bool _isFoldOutOtherCoreConsoleAsset;
 
 
@@ -65,7 +66,7 @@
 
         private static void SetLinkStatusWithCentralCoreConsole(bool statusFlag)
         {
-
+            
             if (IsAnyCoreConsoleAssetUsedByCoreConsoleManager())
             {
 
@@ -237,26 +238,41 @@
             if (_numberOfCoreConsoleAsset > 0)
             {
 
-                GUI.backgroundColor = Color.yellow;
-                EditorGUILayout.LabelField("GameConfig  :   Production", HeighlightedBackgroundWithBoldStyle);
-                GUI.backgroundColor = defaultBackgroundColor;
+                
+                EditorGUILayout.BeginVertical(GUI.skin.box);
+                {
+                    GUI.contentColor = Color.yellow;
+                    _isFoldOutDefaultCoreConsoleAsset = EditorGUILayout.Foldout(
+                        _isFoldOutDefaultCoreConsoleAsset,
+                        "DefaultSettings",true);
+                    GUI.contentColor = defaultContentColor;
 
-                EditorGUILayout.Space();
-                CoreConsoleEditorUtility.DrawSettingsEditor(productionCoreConsoleAsset, null, ref _isFoldOut[0], ref _editorForCoreConsoleAsset[0]);
+                    if (_isFoldOutDefaultCoreConsoleAsset) {
+
+                        _isFoldOut[0] = true;
+                        CoreConsoleEditorUtility.DrawSettingsEditor(productionCoreConsoleAsset, null, ref _isFoldOut[0], ref _editorForCoreConsoleAsset[0]);
+                    }
+                }
+                EditorGUILayout.EndVertical();
+                
 
                 if (_numberOfCoreConsoleAsset > 1)
                 {
 
                     CoreConsoleEditorUtility.DrawHorizontalLine();
-                    GUI.contentColor = Color.cyan;
-                    _isFoldOutOtherCoreConsoleAsset = EditorGUILayout.Foldout(
-                            _isFoldOutOtherCoreConsoleAsset,
-                            "GameConfig  :   Others",
-                            true
-                        );
-                    GUI.contentColor = defaultContentColor;
+                    EditorGUILayout.BeginVertical(GUI.skin.box);
+                    {
+                        GUI.contentColor = Color.cyan;
+                        _isFoldOutOtherCoreConsoleAsset = EditorGUILayout.Foldout(
+                                _isFoldOutOtherCoreConsoleAsset,
+                                "Other Settings",
+                                true
+                            );
+                        GUI.contentColor = defaultContentColor;
+                    }
+                    EditorGUILayout.EndVertical();
+                    
                 }
-
 
                 _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
                 {
@@ -264,20 +280,16 @@
                     {
                         if (_isFoldOutOtherCoreConsoleAsset)
                         {
-                            if (productionCoreConsoleAsset == _listOfCoreConsoleAsset[i])
-                                CoreConsoleEditorUtility.DrawSettingsEditor(_listOfCoreConsoleAsset[0], null, ref _isFoldOut[i], ref _editorForCoreConsoleAsset[i]);
-                            else if (productionCoreConsoleAsset != _listOfCoreConsoleAsset[i])
-                                CoreConsoleEditorUtility.DrawSettingsEditor(_listOfCoreConsoleAsset[i], null, ref _isFoldOut[i], ref _editorForCoreConsoleAsset[i]);
 
-
-
-
-                            if (i < _numberOfCoreConsoleAsset - 1)
+                            EditorGUILayout.BeginVertical(GUI.skin.box);
                             {
-                                EditorGUILayout.Space();
-                                CoreConsoleEditorUtility.DrawHorizontalLine();
-                                EditorGUILayout.Space();
+                                if (productionCoreConsoleAsset == _listOfCoreConsoleAsset[i])
+                                    CoreConsoleEditorUtility.DrawSettingsEditor(_listOfCoreConsoleAsset[0], null, ref _isFoldOut[i], ref _editorForCoreConsoleAsset[i],1);
+                                else if (productionCoreConsoleAsset != _listOfCoreConsoleAsset[i])
+                                    CoreConsoleEditorUtility.DrawSettingsEditor(_listOfCoreConsoleAsset[i], null, ref _isFoldOut[i], ref _editorForCoreConsoleAsset[i],1);
                             }
+                            EditorGUILayout.EndVertical();
+                            
                         }
                     }
 

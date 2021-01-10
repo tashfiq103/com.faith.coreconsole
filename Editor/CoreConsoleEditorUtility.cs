@@ -28,7 +28,7 @@
             EditorGUI.LabelField(rect, "", GUI.skin.horizontalSlider);
         }
 
-        public static void DrawSettingsEditor(Object settings, System.Action OnSettingsUpdated, ref bool foldout, ref Editor editor)
+        public static void DrawSettingsEditor(Object settings, System.Action OnSettingsUpdated, ref bool foldout, ref Editor editor, int indentValue = 0)
         {
 
             if (settings != null)
@@ -43,7 +43,10 @@
                     {
 
                         CreateCachedEditor(settings, null, ref editor);
+
+                        EditorGUI.indentLevel += indentValue;
                         editor.OnInspectorGUI();
+                        EditorGUI.indentLevel -= indentValue;
 
                         if (check.changed)
                         {
