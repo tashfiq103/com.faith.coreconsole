@@ -2,10 +2,12 @@
 {
     using UnityEngine;
     using UnityEditor;
+    using System.IO;
     using System.Collections.Generic;
 
     public class CoreConsoleEditorUtility : Editor
     {
+        
         #region Editor Module   :   GUI
 
         public static void ShowScriptReference(SerializedObject serializedObject)
@@ -86,6 +88,34 @@
             }
 
             return listOfAsset;
+        }
+
+        #endregion
+
+        #region Editor Module   :   CodeGenerator
+
+        public static void GenerateEnum(string path, string nameSpace, string nameOfEnum, params string[] enumValue) {
+
+            string code = "";
+
+            code += string.Format("namespace {0}\n{\n\t", nameSpace);
+            code += string.Format("public enum {0}\n{\n", nameOfEnum);
+
+            int numberOfEnumValue = enumValue.Length;
+
+            for (int i = 0; i < numberOfEnumValue; i++) {
+
+                code += string.Format("\t\t{0}{1}\n", enumValue[i], (i < numberOfEnumValue - 1) ? "," : "");
+            }
+
+            code += "\t}\n}";
+
+            using (StreamWriter streamWriter = new StreamWriter(path)) {
+
+                streamWriter.Write(code);
+            }
+
+            AssetDatabase.Refresh();
         }
 
         #endregion

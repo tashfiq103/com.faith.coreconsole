@@ -124,7 +124,6 @@
                 {
                     EditorGUILayout.Space();
                     EditorGUILayout.HelpBox("The following configuretion asset is used in 'CoreConsoleManager'.\nIt can only be revoked if you assigned any other configuretion file for production", MessageType.Info);
-                    EditorGUILayout.Space();
                 }
                 else
                 {
@@ -133,7 +132,6 @@
                     {
                         EditorGUILayout.Space();
                         EditorGUILayout.HelpBox("The following configuretion is now synced with 'CoreConsoleManager'. To make it standalone, unlink it", MessageType.Info);
-                        EditorGUILayout.Space();
                     }
                 }
 

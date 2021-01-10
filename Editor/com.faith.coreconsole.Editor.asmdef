@@ -1,0 +1,17 @@
+{
+    "name": "com.faith.coreconsole.Editor",
+    "references": [
+        "GUID:3ec6238ba332d4cdaa3383801551a891"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

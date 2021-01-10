@@ -2,6 +2,7 @@
 {
     using UnityEngine;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
 
 #if UNITY_EDITOR
@@ -73,6 +74,7 @@
         private void Awake()
         {
             CheckDuplicateProductionAssetWithDelay();
+            TryToGenerateEnum();
         }
 
 #endif
@@ -106,6 +108,13 @@
         //--------------------
 
 #if UNITY_EDITOR
+
+        private async void TryToGenerateEnum() {
+
+            await Task.Delay(100);
+            Debug.Log(string.Format("AwakeCalled : {0}", name));
+            CoreConsoleConfiguretionFileContainer.GenerateEnum();
+        }
 
         private async void CheckDuplicateProductionAssetWithDelay()
         {

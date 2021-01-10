@@ -1,26 +1,4 @@
-﻿
-//List<CoreConsoleConfiguretionFile> _listOfCoreConsoleConfiguretionFile = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
-//foreach (CoreConsoleConfiguretionFile coreConsoleConfiguretionFile in _listOfCoreConsoleConfiguretionFile)
-//{
-//    if (coreConsoleConfiguretionFile == _reference)
-//    {
-//        CoreConsoleViewrEditorWindow.productionCoreConsoleAsset = _reference;
-//    }
-//    else
-//    {
-
-//        SerializedObject newSerializedObject = new SerializedObject(coreConsoleConfiguretionFile);
-//        SerializedProperty isUsedByCentralCoreConsole = newSerializedObject.FindProperty("_isUsedByCentralCoreConsole");
-//        isUsedByCentralCoreConsole.boolValue = false;
-//        isUsedByCentralCoreConsole.serializedObject.ApplyModifiedProperties();
-//        newSerializedObject.ApplyModifiedProperties();
-//    }
-//}
-//------------
-
-
-
-namespace com.faith.coreconsole
+﻿namespace com.faith.coreconsole
 {
     using UnityEngine;
 
