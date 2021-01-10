@@ -19,8 +19,8 @@
 
         #region SerializedField
 
-        [SerializeField] private bool _isUsedByCentralCoreConsole = false;
-        [SerializeField] private bool _linkWithCentralCoreConsole = false;
+        [SerializeField] private bool _isMarkedAsDefaultSetting = false;
+        [SerializeField] private bool _isLinkedWithDefaultSetting = false;
 
         [SerializeField] private bool _enableStackTrace;
         [SerializeField, Range(10, 999)] private int _numberOfLog = 100;
@@ -39,14 +39,14 @@
         {
             get
             {
-                return _isUsedByCentralCoreConsole;
+                return _isMarkedAsDefaultSetting;
             }
         }
         public bool EditorAccessIfLinkWithCentralCoreConsole
         {
             get
             {
-                return _linkWithCentralCoreConsole;
+                return _isLinkedWithDefaultSetting;
             }
         }
 
@@ -55,7 +55,7 @@
 #endif
 
         public int NumberOfLog { get { return _listOfLogInfo.Count; } }
-        public CoreConsoleEnums.LogType logType { get { return _linkWithCentralCoreConsole ? GlobalLogType : _logType; } }
+        public CoreConsoleEnums.LogType logType { get { return _isLinkedWithDefaultSetting ? GlobalLogType : _logType; } }
 
         public string prefix = "";
         public Color colorForLog = new Color();
@@ -121,7 +121,7 @@
 
             await Task.Delay(100);
 
-            if (_isUsedByCentralCoreConsole)
+            if (_isMarkedAsDefaultSetting)
             {
 
                 List<CoreConsoleConfiguretionFile> listOfAsset = new List<CoreConsoleConfiguretionFile>();
@@ -137,7 +137,7 @@
                 {
                     if (gameConfigAsset != this && gameConfigAsset.EditorAccessIfUsedByCentralCoreConsole)
                     {
-                        _isUsedByCentralCoreConsole = false;
+                        _isMarkedAsDefaultSetting = false;
                         break;
                     }
                 }

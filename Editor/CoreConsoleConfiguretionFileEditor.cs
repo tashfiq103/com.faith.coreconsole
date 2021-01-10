@@ -11,8 +11,8 @@
 
         private CoreConsoleConfiguretionFile _reference;
 
-        private SerializedProperty _sp_isUsedByCentralCoreConsole;
-        private SerializedProperty _sp_linkWithCentralCoreConsole;
+        private SerializedProperty _sp_isMarkedAsDefaultSetting;
+        private SerializedProperty _sp_isLinkedWithDefaultSetting;
 
         private SerializedProperty _sp_enableStackTrace;
         private SerializedProperty _sp_numberOfLog;
@@ -39,8 +39,8 @@
 
             _reference = (CoreConsoleConfiguretionFile)target;
 
-            _sp_isUsedByCentralCoreConsole = serializedObject.FindProperty("_isUsedByCentralCoreConsole");
-            _sp_linkWithCentralCoreConsole = serializedObject.FindProperty("_linkWithCentralCoreConsole");
+            _sp_isMarkedAsDefaultSetting = serializedObject.FindProperty("_isMarkedAsDefaultSetting");
+            _sp_isLinkedWithDefaultSetting = serializedObject.FindProperty("_isLinkedWithDefaultSetting");
 
             _sp_enableStackTrace = serializedObject.FindProperty("_enableStackTrace");
             _sp_numberOfLog = serializedObject.FindProperty("_numberOfLog");
@@ -65,22 +65,22 @@
                 {
                     CoreConsoleEditorUtility.ShowScriptReference(serializedObject);
 
-                    EditorGUI.BeginDisabledGroup(_sp_isUsedByCentralCoreConsole.boolValue);
+                    EditorGUI.BeginDisabledGroup(_sp_isMarkedAsDefaultSetting.boolValue);
                     {
                         if (EditorGUILayout.DropdownButton(EditorGUIUtility.TrTextContent("Advance", "Show advance settings for configuretion file"), FocusType.Passive, EditorStyles.toolbarDropDown, GUILayout.Width(100)))
                         {
                             GenericMenu genericMenuForAdvanceOption = new GenericMenu();
 
                             genericMenuForAdvanceOption.AddItem(
-                                    EditorGUIUtility.TrTextContent("Mark as Production", "It will now be used as central point of all the configuretion file for CoreConsole"),
-                                    _sp_isUsedByCentralCoreConsole.boolValue,
+                                    EditorGUIUtility.TrTextContent("Mark as Default", "It will now be used as default settings for CoreConsole"),
+                                    _sp_isMarkedAsDefaultSetting.boolValue,
                                     () =>
                                     {
-                                        _sp_isUsedByCentralCoreConsole.boolValue = !_sp_isUsedByCentralCoreConsole.boolValue;
-                                        _sp_isUsedByCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+                                        _sp_isMarkedAsDefaultSetting.boolValue = !_sp_isMarkedAsDefaultSetting.boolValue;
+                                        _sp_isMarkedAsDefaultSetting.serializedObject.ApplyModifiedProperties();
 
-                                        _sp_linkWithCentralCoreConsole.boolValue = false;
-                                        _sp_linkWithCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+                                        _sp_isLinkedWithDefaultSetting.boolValue = false;
+                                        _sp_isLinkedWithDefaultSetting.serializedObject.ApplyModifiedProperties();
 
                                         List<CoreConsoleConfiguretionFile> _listOfCoreConsoleConfiguretionFile = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
                                         foreach (CoreConsoleConfiguretionFile coreConsoleConfiguretionFile in _listOfCoreConsoleConfiguretionFile)
@@ -93,9 +93,9 @@
                                             {
 
                                                 SerializedObject newSerializedObject = new SerializedObject(coreConsoleConfiguretionFile);
-                                                SerializedProperty isUsedByCentralCoreConsole = newSerializedObject.FindProperty("_isUsedByCentralCoreConsole");
-                                                isUsedByCentralCoreConsole.boolValue = false;
-                                                isUsedByCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+                                                SerializedProperty isMarkedAsDefaultSetting = newSerializedObject.FindProperty("_isMarkedAsDefaultSetting");
+                                                isMarkedAsDefaultSetting.boolValue = false;
+                                                isMarkedAsDefaultSetting.serializedObject.ApplyModifiedProperties();
                                                 newSerializedObject.ApplyModifiedProperties();
                                             }
                                         }
@@ -103,12 +103,12 @@
                                 );
 
                             genericMenuForAdvanceOption.AddItem(
-                                    EditorGUIUtility.TrTextContent("Override by Production", "Override by the settings by production"),
-                                    _sp_linkWithCentralCoreConsole.boolValue,
+                                    EditorGUIUtility.TrTextContent("Override by Default", "Override by default settings"),
+                                    _sp_isLinkedWithDefaultSetting.boolValue,
                                     () =>
                                     {
-                                        _sp_linkWithCentralCoreConsole.boolValue = !_sp_linkWithCentralCoreConsole.boolValue;
-                                        _sp_linkWithCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+                                        _sp_isLinkedWithDefaultSetting.boolValue = !_sp_isLinkedWithDefaultSetting.boolValue;
+                                        _sp_isLinkedWithDefaultSetting.serializedObject.ApplyModifiedProperties();
                                     }
                                 );
 
@@ -120,7 +120,7 @@
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (_sp_isUsedByCentralCoreConsole.boolValue)
+                if (_sp_isMarkedAsDefaultSetting.boolValue)
                 {
                     EditorGUILayout.Space();
                     EditorGUILayout.HelpBox("The following configuretion asset is used in 'CoreConsoleManager'.\nIt can only be revoked if you assigned any other configuretion file for production", MessageType.Info);
@@ -128,7 +128,7 @@
                 else
                 {
 
-                    if (_sp_linkWithCentralCoreConsole.boolValue)
+                    if (_sp_isLinkedWithDefaultSetting.boolValue)
                     {
                         EditorGUILayout.Space();
                         EditorGUILayout.HelpBox("The following configuretion is now synced with 'CoreConsoleManager'. To make it standalone, unlink it", MessageType.Info);
@@ -140,7 +140,7 @@
             }
             EditorGUILayout.EndVertical();
 
-            if(!_sp_linkWithCentralCoreConsole.boolValue) {
+            if(!_sp_isLinkedWithDefaultSetting.boolValue) {
 
                 EditorGUILayout.PropertyField(_sp_logType);
                 EditorGUI.indentLevel += 1;
