@@ -22,6 +22,7 @@
         [SerializeField] private bool _isMarkedAsDefaultSetting = false;
         [SerializeField] private bool _isLinkedWithDefaultSetting = false;
 
+        [SerializeField] private string _name;
         [SerializeField] private bool _enableStackTrace;
         [SerializeField, Range(10, 999)] private int _numberOfLog = 100;
         [SerializeField] private LogType _clearLogType;
@@ -73,13 +74,26 @@
 
         private void Awake()
         {
-            CheckDuplicateProductionAssetWithDelay();
-            TryToGenerateEnum();
+            Debug.Log(string.Format("[{0}] : Name need to be changed '{1}' -> '{2}'","Awake", _name, name));
+            _name = name;
+            RunCheckList();
+        }
+
+        private void OnValidate()
+        {
+            Debug.Log(string.Format("[{0}] : Name need to be changed '{1}' -> '{2}'","OnValidate", _name, name));
+            if (!_name.Equals(name)) {
+
+                
+                _name = name;
+                RunCheckList();
+            }
         }
 
 #endif
         private void OnEnable()
         {
+            Debug.Log(string.Format("[{0}] : Name need to be changed '{1}' -> '{2}'", "OnEnable", _name, name));
             if (_enableStackTrace)
             {
 
@@ -109,6 +123,12 @@
 
 #if UNITY_EDITOR
 
+        private void RunCheckList() {
+
+            CheckDuplicateDefaultSettings();
+            //TryToGenerateEnum();
+        }
+
         private async void TryToGenerateEnum() {
 
             await Task.Delay(100);
@@ -116,7 +136,7 @@
             CoreConsoleConfiguretionFileContainer.GenerateEnum();
         }
 
-        private async void CheckDuplicateProductionAssetWithDelay()
+        private async void CheckDuplicateDefaultSettings()
         {
 
             await Task.Delay(100);

@@ -33,8 +33,7 @@
                 path = string.Format("Packages/{0}/Runtime", nameSpace);
             }
             else {
-                path = "Assets";
-                //path = string.Format("Assets/{0}/Runtime", nameSpace);
+                path = string.Format("{0}/{1}/Runtime", Application.dataPath, nameSpace);
             }
 
             //Filtering :   EnumNames

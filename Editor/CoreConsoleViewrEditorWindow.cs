@@ -50,24 +50,23 @@
             return _numberOfDuplicateName;
         }
 
-        private static bool IsAnyCoreConsoleAssetUsedByCoreConsoleManager()
+        private static CoreConsoleConfiguretionFile IsAnyCoreConsoleAssetUsedAsDefaultSettings()
         {
 
-            List<CoreConsoleConfiguretionFile> gameConfiguratorAssets = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
-            foreach (CoreConsoleConfiguretionFile gameConfigAsset in gameConfiguratorAssets)
+            List<CoreConsoleConfiguretionFile> coreConsoleConfigueAssets = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
+            foreach (CoreConsoleConfiguretionFile configAsset in coreConsoleConfigueAssets)
             {
 
-                if (gameConfigAsset.EditorAccessIfUsedByCentralCoreConsole)
-                    return true;
+                if (configAsset.EditorAccessIfUsedByCentralCoreConsole)
+                    return configAsset;
             }
-            CoreConsole.LogError("Please assign any of your 'CoreConsoleAsset' to 'CoreConsoleManager'", prefix: "CoreConsoleAsset");
-            return false;
+            return null;
         }
 
         private static void SetLinkStatusWithCentralCoreConsole(bool statusFlag)
         {
             
-            if (IsAnyCoreConsoleAssetUsedByCoreConsoleManager())
+            if (IsAnyCoreConsoleAssetUsedAsDefaultSettings() != null)
             {
 
                 List<CoreConsoleConfiguretionFile> gameConfiguratorAssets = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
@@ -137,6 +136,16 @@
 
             CoreConsoleConfiguretionFile newCoreConsoleAsset = CreateInstance<CoreConsoleConfiguretionFile>();
 
+            if (productionCoreConsoleAsset == null) {
+
+                SerializedObject serializedReferenceOfNewCoreConsoleAsset   = new SerializedObject(newCoreConsoleAsset);
+                SerializedProperty isMarkedAsDefaulySettings                =  serializedReferenceOfNewCoreConsoleAsset.FindProperty("_isMarkedAsDefaultSetting");
+                isMarkedAsDefaulySettings.boolValue                         = true;
+                serializedReferenceOfNewCoreConsoleAsset.ApplyModifiedProperties();
+
+                productionCoreConsoleAsset = newCoreConsoleAsset;
+            }
+
             AssetDatabase.CreateAsset(newCoreConsoleAsset, CoreConsoleConstants.DirectoryForCoreConsoleConfiguretionFile + "/" + absoluteName + ".asset");
             AssetDatabase.SaveAssets();
 
@@ -183,6 +192,21 @@
             HeighlightedBackgroundWithBoldStyle = new GUIStyle { normal = { background = Texture2D.whiteTexture }, fontStyle = FontStyle.Bold };
             _nameOfConfiguretorFile = _defaultName;
 
+
+            if (productionCoreConsoleAsset == null)
+            {
+                CoreConsoleConfiguretionFile defaultSettings = IsAnyCoreConsoleAssetUsedAsDefaultSettings();
+                if (defaultSettings != null)
+                {
+                    productionCoreConsoleAsset = defaultSettings;
+                }
+                else {
+
+                    _nameOfConfiguretorFile = "DefaultSettings";
+                    CreateNewCoreConsoleAsset();
+                }
+            }
+
             UpdateListOfCoreConsoleAsset();
         }
 
@@ -190,15 +214,9 @@
         {
 
             HeaderGUI();
+            CoreConsoleGUI();
 
-            if (productionCoreConsoleAsset == null)
-            {
-                EditorGUILayout.HelpBox("Please assign at least one 'CoreConsoleAsset' to 'CoreConsoleManager' in order configure through 'ControlPanel'", MessageType.Error);
-            }
-            else
-            {
-                CoreConsoleGUI();
-            }
+
         }
 
         #endregion
