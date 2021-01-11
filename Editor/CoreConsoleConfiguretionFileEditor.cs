@@ -261,7 +261,7 @@
 
                 CheckDuplicateDefaultSettings();
                 TryToGenerateEnum();
-                CoreConsoleViewrEditorWindow.UpdateListOfCoreConsoleAsset();
+                
 
             }
         }
@@ -282,9 +282,9 @@
                     listOfAsset.Add((CoreConsoleConfiguretionFile)System.Convert.ChangeType(AssetDatabase.LoadAssetAtPath(assetPath, typeof(CoreConsoleConfiguretionFile)), typeof(CoreConsoleConfiguretionFile)));
                 }
 
-                foreach (CoreConsoleConfiguretionFile coreConsoleAsset in listOfAsset)
+                foreach (CoreConsoleConfiguretionFile coreConsoleConfigFile in listOfAsset)
                 {
-                    if (coreConsoleAsset != _reference && coreConsoleAsset.EditorAccessIfUsedByCentralCoreConsole)
+                    if (coreConsoleConfigFile != _reference && (new SerializedObject(coreConsoleConfigFile).FindProperty("_isMarkedAsDefaultSetting").boolValue))
                     {
                         _sp_isMarkedAsDefaultSetting.boolValue = false;
                         _sp_isMarkedAsDefaultSetting.serializedObject.ApplyModifiedProperties();
@@ -298,7 +298,10 @@
         private async void TryToGenerateEnum()
         {
             await Task.Delay(100);
-            //CoreConsoleConfiguretionFileContainer.GenerateEnum();
+            CoreConsoleConfiguretionFileContainer.GenerateEnum();
+
+            await Task.Delay(100);
+            CoreConsoleViewrEditorWindow.UpdateListOfCoreConsoleAsset();
         }
 
         #endregion

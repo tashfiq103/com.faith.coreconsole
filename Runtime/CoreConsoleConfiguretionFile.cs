@@ -2,12 +2,9 @@
 {
     using UnityEngine;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
 
-#if UNITY_EDITOR
-    using System.Threading.Tasks;
-#endif
+
 
     public class CoreConsoleConfiguretionFile : ScriptableObject
     {
@@ -36,21 +33,7 @@
 
 #if UNITY_EDITOR
 
-        public bool EditorAccessIfUsedByCentralCoreConsole
-        {
-            get
-            {
-                return _isMarkedAsDefaultSetting;
-            }
-        }
-        public bool EditorAccessIfLinkWithCentralCoreConsole
-        {
-            get
-            {
-                return _isLinkedWithDefaultSetting;
-            }
-        }
-
+        
         public List<CoreConsole.DebugInfo> EditorListOfLogInfo { get { return _listOfLogInfo; } }
 
 #endif
@@ -85,8 +68,6 @@
             }
         }
 
-
-
         private void OnDisable()
         {
             if (_enableStackTrace)
@@ -94,6 +75,7 @@
                 Application.logMessageReceivedThreaded -= LogMessageReciever;
             }
         }
+
 
         #endregion
 

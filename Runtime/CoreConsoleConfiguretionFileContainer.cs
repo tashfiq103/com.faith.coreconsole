@@ -1,8 +1,10 @@
 ﻿namespace com.faith.coreconsole
 {
     using UnityEngine;
+    using UnityEngine.Events;
     using System.IO;
     using System.Text;
+    using System.Threading.Tasks;
 
     [DefaultExecutionOrder(CoreConsoleConstants.EXECUTION_ORDER_FOR_CONFIGUREION_FILE_CONTAINER)]
     public class CoreConsoleConfiguretionFileContainer
@@ -18,8 +20,10 @@
 
 #if UNITY_EDITOR
 
-        public static void GenerateEnum()
+        public async static void GenerateEnum(int delayInMiliseconds = 0, UnityAction OnEnumGenerationEnd = null)
         {
+            await Task.Delay(100);
+
             FetchCoreConsoleConfiguretionFile();
 
             string nameSpace = "com.faith.coreconsole";
@@ -33,7 +37,8 @@
                 path = string.Format("Packages/{0}/Runtime", nameSpace);
             }
             else {
-                path = string.Format("{0}/{1}/Runtime", Application.dataPath, nameSpace);
+                //path = string.Format("{0}/{1}/Runtime", Application.dataPath, nameSpace);
+                path = string.Format("{0}/", CoreConsoleConstants.RootDirectory);
             }
 
             //Filtering :   EnumNames
@@ -92,6 +97,7 @@
 
             code += "\n\t}\n}";
 
+            path += string.Format("{0}.{1}", nameOfEnum, "cs");
             Debug.Log("Path = " + path);
             Debug.Log("Code:\n" + code);
             using (StreamWriter streamWriter = new StreamWriter(path))
@@ -100,6 +106,8 @@
             }
 
             UnityEditor.AssetDatabase.Refresh();
+
+            OnEnumGenerationEnd?.Invoke();
         }
 
 #endif

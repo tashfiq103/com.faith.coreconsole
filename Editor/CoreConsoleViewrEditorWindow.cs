@@ -4,6 +4,7 @@
     using UnityEditor;
     using System.IO;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     public class CoreConsoleViewrEditorWindow : CoreConsoleBaseEditorWindowClass
     {
@@ -24,7 +25,7 @@
         private static bool[] _isFoldOut;
         private static bool _isFoldOutDefaultCoreConsoleAsset;
         private static bool _isFoldOutOtherCoreConsoleAsset;
-
+        private static bool _isDrawGUI;
 
         private static Vector2 _scrollPosition;
 
@@ -56,8 +57,8 @@
             List<CoreConsoleConfiguretionFile> coreConsoleConfigueAssets = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
             foreach (CoreConsoleConfiguretionFile configAsset in coreConsoleConfigueAssets)
             {
-
-                if (configAsset.EditorAccessIfUsedByCentralCoreConsole)
+                SerializedProperty isUsedAsDefaultSettings = new SerializedObject(configAsset).FindProperty("_isMarkedAsDefaultSetting");
+                if (isUsedAsDefaultSettings.boolValue)
                     return configAsset;
             }
             return null;
@@ -71,11 +72,12 @@
 
                 List<CoreConsoleConfiguretionFile> gameConfiguratorAssets = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
 
-                foreach (CoreConsoleConfiguretionFile gameConfigAsset in gameConfiguratorAssets)
+                foreach (CoreConsoleConfiguretionFile coreConsoleConfigFile in gameConfiguratorAssets)
                 {
-                    if (!gameConfigAsset.EditorAccessIfUsedByCentralCoreConsole)
+                    SerializedObject serializedCoreConsoleAsset = new SerializedObject(coreConsoleConfigFile);
+
+                    if (!serializedCoreConsoleAsset.FindProperty("_isMarkedAsDefaultSetting").boolValue)
                     {
-                        SerializedObject serializedCoreConsoleAsset = new SerializedObject(gameConfigAsset);
 
                         SerializedProperty _linkWithCentralCoreConsole = serializedCoreConsoleAsset.FindProperty("_linkWithCentralCoreConsole");
                         _linkWithCentralCoreConsole.boolValue = statusFlag;
@@ -96,20 +98,20 @@
             if (productionCoreConsoleAsset == null)
             {
 
-                foreach (CoreConsoleConfiguretionFile gameConfiguratorAsset in _listOfCoreConsoleAsset)
+                foreach (CoreConsoleConfiguretionFile coreConsoleConfigFile in _listOfCoreConsoleAsset)
                 {
-                    if (gameConfiguratorAsset.EditorAccessIfUsedByCentralCoreConsole)
-                        productionCoreConsoleAsset = gameConfiguratorAsset;
+                    if (new SerializedObject(coreConsoleConfigFile).FindProperty("_isMarkedAsDefaultSetting").boolValue)
+                        productionCoreConsoleAsset = coreConsoleConfigFile;
                 }
             }
 
-            foreach (CoreConsoleConfiguretionFile gameConfiguratorAsset in _listOfCoreConsoleAsset)
+            foreach (CoreConsoleConfiguretionFile coreConsoleConfigFile in _listOfCoreConsoleAsset)
             {
                 //if : It is the central game configuretor asset but not matched with the cashed production asset. Remove It From Prodcution
-                if (gameConfiguratorAsset.EditorAccessIfUsedByCentralCoreConsole && productionCoreConsoleAsset != gameConfiguratorAsset)
+                if (new SerializedObject(coreConsoleConfigFile).FindProperty("_isMarkedAsDefaultSetting").boolValue && productionCoreConsoleAsset != coreConsoleConfigFile)
                 {
 
-                    SerializedObject serializedCoreConsoleAsset = new SerializedObject(gameConfiguratorAsset);
+                    SerializedObject serializedCoreConsoleAsset = new SerializedObject(coreConsoleConfigFile);
 
                     SerializedProperty _isUsedByCentralCoreConsole = serializedCoreConsoleAsset.FindProperty("_isUsedByCentralCoreConsole");
                     _isUsedByCentralCoreConsole.boolValue = false;
@@ -155,30 +157,42 @@
             UpdateListOfCoreConsoleAsset();
         }
 
+        private void OnEditorUpdate() {
+
+            if (CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>().Count != _numberOfCoreConsoleAsset) {
+
+                _isDrawGUI = false;
+                UpdateListOfCoreConsoleAsset();
+                CoreConsoleConfiguretionFileContainer.GenerateEnum(100, ()=> {
+                    _isDrawGUI = true;
+                });
+            }
+        }
+
         #endregion
 
         #region EditorWindow
 
-        [MenuItem("FAITH/CoreConsole/ControlPanel", priority = 0)]
+        [MenuItem("FAITH/CoreConsole/Console Configuretion Viwer", priority = 0)]
         public static void ShowWindow()
         {
 
             UpdateListOfCoreConsoleAsset();
 
-            EditorWindow = GetWindow<CoreConsoleViewrEditorWindow>("CoreConsole Viwer", typeof(CoreConsoleViewrEditorWindow));
+            EditorWindow = GetWindow<CoreConsoleViewrEditorWindow>("Console Configuretion Viwer", typeof(CoreConsoleViewrEditorWindow));
 
             EditorWindow.minSize = new Vector2(450f, 240f);
             EditorWindow.Show();
         }
 
-        [MenuItem("FAITH/CoreConsole/Use Production Settings", priority = 1)]
+        [MenuItem("FAITH/CoreConsole/Use Default Settings", priority = 1)]
         public static void LinkWithProductionCoreConsole()
         {
 
             SetLinkStatusWithCentralCoreConsole(true);
         }
 
-        [MenuItem("FAITH/CoreConsole/Use Standalone Settings", priority = 1)]
+        [MenuItem("FAITH/CoreConsole/Use Standalone Settings", priority = 2)]
         public static void UnlinkWithProductionCoreConsole()
         {
             SetLinkStatusWithCentralCoreConsole(false);
@@ -207,6 +221,15 @@
             }
 
             UpdateListOfCoreConsoleAsset();
+
+            EditorApplication.update += OnEditorUpdate;
+            _isDrawGUI = true;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.update -= OnEditorUpdate;
+            _isDrawGUI = false;
         }
 
         public void OnGUI()
