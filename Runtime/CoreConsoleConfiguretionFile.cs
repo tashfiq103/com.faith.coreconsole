@@ -72,31 +72,13 @@
 
 #if UNITY_EDITOR
 
-        private void Awake()
-        {
-            Debug.Log(string.Format("[{0}] : Name need to be changed '{1}' -> '{2}'","Awake", _name, name));
-            _name = name;
-            RunCheckList();
-        }
-
-        private void OnValidate()
-        {
-            Debug.Log(string.Format("[{0}] : Name need to be changed '{1}' -> '{2}'","OnValidate", _name, name));
-            if (!_name.Equals(name)) {
-
-                
-                _name = name;
-                RunCheckList();
-            }
-        }
 
 #endif
         private void OnEnable()
         {
-            Debug.Log(string.Format("[{0}] : Name need to be changed '{1}' -> '{2}'", "OnEnable", _name, name));
+            
             if (_enableStackTrace)
             {
-
                 if (_listOfLogInfo == null) _listOfLogInfo = new List<CoreConsole.DebugInfo>();
 
                 Application.logMessageReceivedThreaded += LogMessageReciever;
@@ -115,56 +97,10 @@
 
         #endregion
 
-        #region Configuretion
-
         //--------------------
         //Region Seperator
         //--------------------
-
-#if UNITY_EDITOR
-
-        private void RunCheckList() {
-
-            CheckDuplicateDefaultSettings();
-            //TryToGenerateEnum();
-        }
-
-        private async void TryToGenerateEnum() {
-
-            await Task.Delay(100);
-            Debug.Log(string.Format("AwakeCalled : {0}", name));
-            CoreConsoleConfiguretionFileContainer.GenerateEnum();
-        }
-
-        private async void CheckDuplicateDefaultSettings()
-        {
-
-            await Task.Delay(100);
-
-            if (_isMarkedAsDefaultSetting)
-            {
-
-                List<CoreConsoleConfiguretionFile> listOfAsset = new List<CoreConsoleConfiguretionFile>();
-                string[] GUIDs = UnityEditor.AssetDatabase.FindAssets("t:" + typeof(CoreConsoleConfiguretionFile).ToString().Replace("UnityEngine.", ""));
-
-                foreach (string GUID in GUIDs)
-                {
-                    string assetPath = UnityEditor.AssetDatabase.GUIDToAssetPath(GUID);
-                    listOfAsset.Add((CoreConsoleConfiguretionFile)Convert.ChangeType(UnityEditor.AssetDatabase.LoadAssetAtPath(assetPath, typeof(CoreConsoleConfiguretionFile)), typeof(CoreConsoleConfiguretionFile)));
-                }
-
-                foreach (CoreConsoleConfiguretionFile gameConfigAsset in listOfAsset)
-                {
-                    if (gameConfigAsset != this && gameConfigAsset.EditorAccessIfUsedByCentralCoreConsole)
-                    {
-                        _isMarkedAsDefaultSetting = false;
-                        break;
-                    }
-                }
-            }
-        }
-
-#endif
+        #region Configuretion
 
         private void LogMessageReciever(string condition, string stackTrace, UnityEngine.LogType logType)
         {

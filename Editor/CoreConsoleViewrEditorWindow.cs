@@ -212,10 +212,8 @@
 
         public void OnGUI()
         {
-
             HeaderGUI();
             CoreConsoleGUI();
-
 
         }
 

@@ -3,6 +3,7 @@
     using UnityEngine;
     using UnityEditor;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     [CustomEditor(typeof(CoreConsoleConfiguretionFile))]
     public class CoreConsoleConfiguretionFileEditor : CoreConsoleBaseEditorClass
@@ -14,6 +15,7 @@
         private SerializedProperty _sp_isMarkedAsDefaultSetting;
         private SerializedProperty _sp_isLinkedWithDefaultSetting;
 
+        private SerializedProperty _sp_name;
         private SerializedProperty _sp_enableStackTrace;
         private SerializedProperty _sp_numberOfLog;
         private SerializedProperty _sp_clearLogType;
@@ -42,6 +44,7 @@
             _sp_isMarkedAsDefaultSetting = serializedObject.FindProperty("_isMarkedAsDefaultSetting");
             _sp_isLinkedWithDefaultSetting = serializedObject.FindProperty("_isLinkedWithDefaultSetting");
 
+            _sp_name = serializedObject.FindProperty("_name");
             _sp_enableStackTrace = serializedObject.FindProperty("_enableStackTrace");
             _sp_numberOfLog = serializedObject.FindProperty("_numberOfLog");
             _sp_clearLogType = serializedObject.FindProperty("_clearLogType");
@@ -52,6 +55,13 @@
             _sp_colorForLog = serializedObject.FindProperty("colorForLog");
             _sp_colorForLogWarning = serializedObject.FindProperty("colorForWarning");
             _sp_colorForLogError = serializedObject.FindProperty("colorForLogError");
+
+            EditorApplication.update += OnUpdate;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.update -= OnUpdate;
         }
 
         public override void OnInspectorGUI()
@@ -232,6 +242,63 @@
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        #endregion
+
+        #region Configuretion
+
+        private void OnUpdate() {
+
+            if (_reference != null && !_sp_name.stringValue.Equals(_reference.name)) {
+
+                _sp_name.stringValue = _reference.name;
+                _sp_name.serializedObject.ApplyModifiedProperties();
+
+                EditorUtility.SetDirty(target);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+
+                CheckDuplicateDefaultSettings();
+                TryToGenerateEnum();
+
+            }
+        }
+
+        private async void CheckDuplicateDefaultSettings() {
+
+            await Task.Delay(100);
+
+            if (_sp_isMarkedAsDefaultSetting.boolValue)
+            {
+
+                List<CoreConsoleConfiguretionFile> listOfAsset = new List<CoreConsoleConfiguretionFile>();
+                string[] GUIDs = AssetDatabase.FindAssets("t:" + typeof(CoreConsoleConfiguretionFile).ToString().Replace("UnityEngine.", ""));
+
+                foreach (string GUID in GUIDs)
+                {
+                    string assetPath = AssetDatabase.GUIDToAssetPath(GUID);
+                    listOfAsset.Add((CoreConsoleConfiguretionFile)System.Convert.ChangeType(AssetDatabase.LoadAssetAtPath(assetPath, typeof(CoreConsoleConfiguretionFile)), typeof(CoreConsoleConfiguretionFile)));
+                }
+
+                Debug.Log(listOfAsset.Count);
+                foreach (CoreConsoleConfiguretionFile coreConsoleAsset in listOfAsset)
+                {
+                    if (coreConsoleAsset != _reference && coreConsoleAsset.EditorAccessIfUsedByCentralCoreConsole)
+                    {
+                        _sp_isMarkedAsDefaultSetting.boolValue = false;
+                        _sp_isMarkedAsDefaultSetting.serializedObject.ApplyModifiedProperties();
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        private async void TryToGenerateEnum()
+        {
+            await Task.Delay(100);
+            //CoreConsoleConfiguretionFileContainer.GenerateEnum();
         }
 
         #endregion
