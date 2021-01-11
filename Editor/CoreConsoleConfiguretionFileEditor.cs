@@ -261,6 +261,7 @@
 
                 CheckDuplicateDefaultSettings();
                 TryToGenerateEnum();
+                CoreConsoleViewrEditorWindow.UpdateListOfCoreConsoleAsset();
 
             }
         }
@@ -281,7 +282,6 @@
                     listOfAsset.Add((CoreConsoleConfiguretionFile)System.Convert.ChangeType(AssetDatabase.LoadAssetAtPath(assetPath, typeof(CoreConsoleConfiguretionFile)), typeof(CoreConsoleConfiguretionFile)));
                 }
 
-                Debug.Log(listOfAsset.Count);
                 foreach (CoreConsoleConfiguretionFile coreConsoleAsset in listOfAsset)
                 {
                     if (coreConsoleAsset != _reference && coreConsoleAsset.EditorAccessIfUsedByCentralCoreConsole)

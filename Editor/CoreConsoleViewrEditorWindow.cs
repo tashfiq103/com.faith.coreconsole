@@ -87,9 +87,8 @@
             }
         }
 
-        private static void UpdateListOfCoreConsoleAsset()
+        public static void UpdateListOfCoreConsoleAsset()
         {
-
             _listOfCoreConsoleAsset = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
             _numberOfCoreConsoleAsset = _listOfCoreConsoleAsset.Count;
 
