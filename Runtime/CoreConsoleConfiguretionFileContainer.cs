@@ -34,10 +34,10 @@
             //Defining  :   Path
             if (UnityEditor.AssetDatabase.FindAssets(nameSpace, new string[] { "Packages" }).Length > 0)
             {
-                path = string.Format("Packages/{0}/Runtime/", nameSpace);
+                path = string.Format("{0}/{1}/Runtime/", "Packages", nameSpace);
             }
             else {
-                path = string.Format("{0}/", CoreConsoleConstants.RootDirectory);
+                path = string.Format("{0}/{1}/Runtime/", "Assets", nameSpace);
             }
 
             //Filtering :   EnumNames

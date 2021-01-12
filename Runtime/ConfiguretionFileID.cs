@@ -1,8 +1,10 @@
-﻿namespace com.faith.coreconsole
+namespace com.faith.coreconsole
 {
-    public enum ConfiguretionFileID
-    {
-        none
-    }
+	public enum  ConfiguretionFileID
+	{
+		ArifSettings,
+		DefaultSettings,
+		KaiyumSettings,
+		none
+	}
 }
-

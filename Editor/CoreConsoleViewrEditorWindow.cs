@@ -172,7 +172,7 @@
 
         #region EditorWindow
 
-        [MenuItem("FAITH/CoreConsole/Console Configuretion Viwer", priority = 0)]
+        [MenuItem("FAITH/CoreConsole/Console Configuretion Viwer", priority = 15)]
         public static void ShowWindow()
         {
 
@@ -184,14 +184,14 @@
             EditorWindow.Show();
         }
 
-        [MenuItem("FAITH/CoreConsole/Use Default Settings", priority = 1)]
+        [MenuItem("FAITH/CoreConsole/Use Default Settings", priority = 16)]
         public static void LinkWithProductionCoreConsole()
         {
 
             SetLinkStatusWithCentralCoreConsole(true);
         }
 
-        [MenuItem("FAITH/CoreConsole/Use Standalone Settings", priority = 2)]
+        [MenuItem("FAITH/CoreConsole/Use Standalone Settings", priority = 17)]
         public static void UnlinkWithProductionCoreConsole()
         {
             SetLinkStatusWithCentralCoreConsole(false);
