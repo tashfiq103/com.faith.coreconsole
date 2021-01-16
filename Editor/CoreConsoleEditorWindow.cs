@@ -28,7 +28,10 @@
 
         private static List<CoreConsoleEditorWindow> _listOfEditorWindowOfCoreConsole;
         private static List<CoreConsoleConfiguretionFile> _listOfGameConfiguretorAsset = new List<CoreConsoleConfiguretionFile>();
-
+        internal const float defaultConsoleWidth = 480f;
+        internal const float defaultConsoleHeight= 480f;
+        internal const float minConsoleHeightForLogList = 336f;
+        internal const float minConsoleHeightForLogInfo = 144f;
 
         private GUIContent _GUIContentForClearDropdownButton = new GUIContent();
 
@@ -145,6 +148,7 @@
         public void OnInspectorUpdate()
         {
             Repaint();
+
         }
 
         public void OnDisable()
@@ -315,7 +319,6 @@
 
                     if (_isClearOnEnteringPlayMode)
                     {
-                        Debug.Log("ashchi");
                         ClearAllLog();
                     }
                     break;
@@ -405,7 +408,7 @@
             CoreConsoleEditorWindow editorWindowOfCoreConsole = GetWindow<CoreConsoleEditorWindow>(title, typeof(CoreConsoleEditorWindow));
 
             editorWindowOfCoreConsole.titleContent.text = title;
-            editorWindowOfCoreConsole.minSize = new Vector2(480f, 240f);
+            editorWindowOfCoreConsole.minSize = new Vector2(defaultConsoleWidth, defaultConsoleHeight);
             editorWindowOfCoreConsole.Show();
 
             _listOfEditorWindowOfCoreConsole.Add(editorWindowOfCoreConsole);
