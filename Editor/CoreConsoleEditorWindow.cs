@@ -55,15 +55,19 @@
         [SerializeField] private bool _errorPause;
         [SerializeField] private bool _timeStamp;
 
+        private string  _searchText = "";
+
         [SerializeField] private bool _enableInfoLog = true;
         [SerializeField] private bool _enableLogWarning = true;
         [SerializeField] private bool _enableLogError = true;
 
+        
+
         private float _contentHeightForLogsInList = 30;
 
-        private int _selectedLogIndex;
-        private string _selectedLogCondition;
-        private string _selectedLogStackTrace;
+        private int     _selectedLogIndex;
+        private string  _selectedLogCondition;
+        private string  _selectedLogStackTrace;
         private Vector2 _scrollPositionForListOfLog;
         private Vector2 _scrollPositionForLogMessage;
 
@@ -269,7 +273,7 @@
         private string GetButtonLabeledForGameConfiguretorSelection()
         {
 
-            string result = "Filter";
+            string result = " ConfigFile ";
 
             int numberOfSelectedAsset = 0;
             int numberOfGameConfiguretorAsset = _gameConfiguretorEnableStatus.Length;
@@ -474,8 +478,10 @@
 
                 GUILayout.FlexibleSpace();
 
-                _GUIContentForSelectedCoreConsoleAsset.text = GetButtonLabeledForGameConfiguretorSelection();
+                _searchText = EditorGUILayout.TextField(_searchText, EditorStyles.toolbarSearchField);
 
+                EditorGUILayout.Space(5f);
+                _GUIContentForSelectedCoreConsoleAsset.text = GetButtonLabeledForGameConfiguretorSelection();
                 if (EditorGUILayout.DropdownButton(_GUIContentForSelectedCoreConsoleAsset, FocusType.Passive, EditorStyles.toolbarDropDown))
                 {
 
