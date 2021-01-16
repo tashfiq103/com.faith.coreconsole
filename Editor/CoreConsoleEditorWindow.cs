@@ -13,7 +13,7 @@
         private class ConsoleDebugInfo
         {
             public CoreConsoleConfiguretionFile gameConfig;
-            public CoreConsole.DebugInfo        debugInfo;
+            public CoreConsole.DebugInfo debugInfo;
         }
 
         #endregion
@@ -32,11 +32,15 @@
 
         private GUIContent _GUIContentForClearDropdownButton = new GUIContent();
 
+        private GUIContent _GUIContentForCoreConsoleInterfaceSettings = new GUIContent();
+
+        private GUIContent _GUIContentForSelectedCoreConsoleAsset = new GUIContent();
+
         private GUIContent _GUIContentForTogglingInfoLog = new GUIContent();
         private GUIContent _GUIContentForTogglingWarningLog = new GUIContent();
         private GUIContent _GUIContentForTogglingErrorLog = new GUIContent();
 
-        private GUIContent _GUIContentForSelectedConfigAsset = new GUIContent();
+        
 
         private GUIContent _GUIContentForInfoLog = new GUIContent();
         private GUIContent _GUIContentForWarningLog = new GUIContent();
@@ -45,19 +49,17 @@
         private GUIContent _GUIContentForLogMessage = new GUIContent();
 
 
+        [SerializeField] private bool _isClearOnEnteringPlayMode;
+        [SerializeField] private bool _isClearOnBuild;
 
         [SerializeField] private bool _errorPause;
-        [SerializeField] private bool _showTimeStamp;
+        [SerializeField] private bool _timeStamp;
 
         [SerializeField] private bool _enableInfoLog = true;
         [SerializeField] private bool _enableLogWarning = true;
         [SerializeField] private bool _enableLogError = true;
 
         private float _contentHeightForLogsInList = 30;
-
-        [SerializeField] private bool _isClearOnEnteringPlayMode;
-        [SerializeField] private bool _isClearOnBuild;
-        private string[] _clearOptionLable = new string[] { "Clear on Play", "Clear on Build" };
 
         private int _selectedLogIndex;
         private string _selectedLogCondition;
@@ -267,7 +269,7 @@
         private string GetButtonLabeledForGameConfiguretorSelection()
         {
 
-            string result = "None";
+            string result = "Filter";
 
             int numberOfSelectedAsset = 0;
             int numberOfGameConfiguretorAsset = _gameConfiguretorEnableStatus.Length;
@@ -326,6 +328,8 @@
             defaultContentColor = GUI.contentColor;
 
             _GUIContentForClearDropdownButton.image = EditorGUIUtility.IconContent("Icon Dropdown").image;
+
+            _GUIContentForCoreConsoleInterfaceSettings = EditorGUIUtility.TrTextContent("Settings", "Additional Settings for CoreConsoleInterface");
 
             _GUIContentForTogglingInfoLog.image = EditorGUIUtility.IconContent("console.infoicon.sml").image;
             _GUIContentForTogglingWarningLog.image = EditorGUIUtility.IconContent("console.warnicon.sml").image;
@@ -420,14 +424,14 @@
                     GenericMenu genericMenuForClearMode = new GenericMenu();
 
                     genericMenuForClearMode.AddItem(
-                            new GUIContent(_clearOptionLable[0]),
+                            EditorGUIUtility.TrTextContent("Clear on Play", "Pause the EditorApplication when tracing error"),
                             _isClearOnEnteringPlayMode,
                             () => {
                                 _isClearOnEnteringPlayMode = !_isClearOnEnteringPlayMode;
                             });
 
                     genericMenuForClearMode.AddItem(
-                            new GUIContent(_clearOptionLable[1]),
+                            EditorGUIUtility.TrTextContent("Clear on Build", "Pause the EditorApplication when tracing error"),
                             _isClearOnBuild,
                             () => {
                                 _isClearOnBuild = !_isClearOnBuild;
@@ -438,47 +442,41 @@
 
                 if (clearClicked)
                 {
-
                     ClearAllLog();
                 }
 
+                EditorGUILayout.Space(5f);
+                if (EditorGUILayout.DropdownButton(_GUIContentForCoreConsoleInterfaceSettings, FocusType.Passive, EditorStyles.toolbarDropDown)) {
 
+                    GenericMenu genericMenuForInterfaceSettings = new GenericMenu();
 
-                Color defaultBackgroundColorOfGUI = GUI.backgroundColor;
-                Color dynamicColor = defaultBackgroundColorOfGUI;
+                    genericMenuForInterfaceSettings.AddItem(
+                            EditorGUIUtility.TrTextContent("Error Pause", "Pause the EditorApplication when tracing error"),
+                            _errorPause,
+                            () =>
+                            {
 
-                dynamicColor.a = _errorPause ? 1f : 0.5f;
-                GUI.backgroundColor = dynamicColor;
-                if (GUILayout.Button(EditorGUIUtility.TrTextContent("Error Pause", "Pause Play Mode on error"), GUILayout.Width(80)))
-                {
+                                _errorPause = !_errorPause;
+                            }
+                        );
 
-                    _errorPause = !_errorPause;
+                    genericMenuForInterfaceSettings.AddItem(
+                            EditorGUIUtility.TrTextContent("Time Stamp", "Pause the EditorApplication when tracing error"),
+                            _timeStamp,
+                            () =>
+                            {
+                                _timeStamp = !_timeStamp;
+                            }
+                        );
+
+                    genericMenuForInterfaceSettings.ShowAsContext();
                 }
-                GUI.backgroundColor = defaultBackgroundColorOfGUI;
-
-                dynamicColor.a = _showTimeStamp ? 1f : 0.5f;
-                GUI.backgroundColor = dynamicColor;
-                if (GUILayout.Button(EditorGUIUtility.TrTextContent("Time Stamp", "Show 'Time Stamp' for logs"), GUILayout.Width(80)))
-                {
-                    _showTimeStamp = !_showTimeStamp;
-                }
-                GUI.backgroundColor = defaultBackgroundColorOfGUI;
 
                 GUILayout.FlexibleSpace();
 
-                //InfoLog
-                DrawToggolingLogsGUI(LogType.Log);
+                _GUIContentForSelectedCoreConsoleAsset.text = GetButtonLabeledForGameConfiguretorSelection();
 
-                //WarningLog
-                DrawToggolingLogsGUI(LogType.Warning);
-
-                //ErrorLog
-                DrawToggolingLogsGUI(LogType.Error);
-
-                _GUIContentForSelectedConfigAsset.text = GetButtonLabeledForGameConfiguretorSelection();
-
-
-                if (EditorGUILayout.DropdownButton(_GUIContentForSelectedConfigAsset, FocusType.Passive, EditorStyles.toolbarDropDown))
+                if (EditorGUILayout.DropdownButton(_GUIContentForSelectedCoreConsoleAsset, FocusType.Passive, EditorStyles.toolbarDropDown))
                 {
 
                     UpdateGameConfiguretorAsset();
@@ -532,6 +530,14 @@
                     genericMenuForGameConfiguretorSelection.ShowAsContext();
                 }
 
+                //InfoLog
+                DrawToggolingLogsGUI(LogType.Log);
+
+                //WarningLog
+                DrawToggolingLogsGUI(LogType.Warning);
+
+                //ErrorLog
+                DrawToggolingLogsGUI(LogType.Error);
             }
             EditorGUILayout.EndHorizontal();
 
@@ -717,7 +723,7 @@
                         debugInfo.logType
                         );
 
-                    if (_showTimeStamp)
+                    if (_timeStamp)
                         condition = string.Format("[{0}]_", debugInfo.timeStamp) + condition;
 
                     GUI.backgroundColor = IsSelectedLog(logIndex) ? _selectedLogColor : defaultBackgroundColor;
