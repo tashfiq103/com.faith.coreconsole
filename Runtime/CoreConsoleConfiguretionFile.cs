@@ -88,12 +88,12 @@
 
             if (string.IsNullOrEmpty(prefix) || string.IsNullOrWhiteSpace(prefix))
             {
-                Debug.LogWarning(string.Format("No prefix was found for [CoreDebugger]_['{0}']. Assigning it's name as new prefix = {1}", prefix, name));
+                Debug.LogWarning(string.Format("No prefix was found for [{0}]_['{1}']. Assigning it's name as new prefix = {2}", CoreConsole.DEBUG_MESSAGE_PREFIX, prefix, name));
                 prefix = name;
                 return;
             }
 
-            string filter = string.Format("{0}_[{1}]", CoreConsole._debugMessagePrefix, prefix);
+            string filter = string.Format("{0}_[{1}]", CoreConsole.DEBUG_MESSAGE_PREFIX, prefix);
             if (condition.Contains(filter))
             {
 
@@ -103,6 +103,7 @@
                 _listOfLogInfo.Add(new CoreConsole.DebugInfo()
                 {
                     timeStamp = DateTime.Now.ToString(),
+                    prefix = prefix,
                     condition = condition,
                     stackTrace = stackTrace,
                     logType = logType

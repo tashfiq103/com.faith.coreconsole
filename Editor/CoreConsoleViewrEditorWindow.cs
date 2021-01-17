@@ -24,7 +24,6 @@
         private static bool[] _isFoldOut;
         private static bool _isFoldOutDefaultCoreConsoleAsset;
         private static bool _isFoldOutOtherCoreConsoleAsset;
-        private static bool _isDrawGUI;
 
         private static Vector2 _scrollPosition;
 
@@ -160,10 +159,9 @@
 
             if (CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>().Count != _numberOfCoreConsoleAsset) {
 
-                _isDrawGUI = false;
                 UpdateListOfCoreConsoleAsset();
                 CoreConsoleConfiguretionFileContainer.GenerateEnum(100, ()=> {
-                    _isDrawGUI = true;
+
                 });
             }
         }
@@ -222,13 +220,11 @@
             UpdateListOfCoreConsoleAsset();
 
             EditorApplication.update += OnEditorUpdate;
-            _isDrawGUI = true;
         }
 
         private void OnDisable()
         {
             EditorApplication.update -= OnEditorUpdate;
-            _isDrawGUI = false;
         }
 
         public void OnGUI()

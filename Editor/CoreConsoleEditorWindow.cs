@@ -4,6 +4,7 @@
     using UnityEditor;
     using UnityEditor.Build;
     using UnityEditor.Build.Reporting;
+    using UnityEditor.Callbacks;
     using System.Collections.Generic;
 
     internal class CoreConsoleEditorWindow : CoreConsoleBaseEditorWindowClass, IPreprocessBuildWithReport
@@ -20,7 +21,7 @@
 
         #region Public Variables
 
-        public int callbackOrder => throw new System.NotImplementedException();
+        public int callbackOrder => CoreConsoleConstants.EXECUTION_ORDER_FOR_CONFIGUREION_FILE_CONTAINER;
 
         #endregion
 
@@ -42,6 +43,7 @@
         [SerializeField] private bool _isClearOnBuild;
 
         [SerializeField] private bool _errorPause;
+        [SerializeField] private bool _prefix;
         [SerializeField] private bool _timeStamp;
 
 
@@ -148,7 +150,6 @@
         {
             HeaderGUI();
 
-
             DrawLogListGUI();
 
             DrawLogMessageGUI();
@@ -182,6 +183,7 @@
             if (_isClearOnBuild)
                 ClearAllLog();
         }
+
 
         private void LogMessageReciever(string condition, string stackTrace, LogType logType)
         {
@@ -277,11 +279,18 @@
 
             string[] splitBy_ = context.Split('_');
             int numberOfSplit = splitBy_.Length;
-
             for (int i = 1; i < numberOfSplit; i++)
             {
                 result += splitBy_[i];
                 result += (i < (numberOfSplit - 1)) ? "_" : "";
+            }
+
+            string[] splitByColon = result.Split(':');
+            numberOfSplit = splitByColon.Length;
+            result = "";
+            for (int i = 1; i < numberOfSplit; i++)
+            {
+                result += splitByColon[i];
             }
 
             return result;
@@ -449,12 +458,12 @@
                                 _isClearOnEnteringPlayMode = !_isClearOnEnteringPlayMode;
                             });
 
-                    genericMenuForClearMode.AddItem(
-                            EditorGUIUtility.TrTextContent("Clear on Build", "Pause the EditorApplication when tracing error"),
-                            _isClearOnBuild,
-                            () => {
-                                _isClearOnBuild = !_isClearOnBuild;
-                            });
+                    //genericMenuForClearMode.AddItem(
+                    //        EditorGUIUtility.TrTextContent("Clear on Build", "Pause the EditorApplication when tracing error"),
+                    //        _isClearOnBuild,
+                    //        () => {
+                    //            _isClearOnBuild = !_isClearOnBuild;
+                    //        });
 
                     genericMenuForClearMode.ShowAsContext();
                 }
@@ -480,11 +489,20 @@
                         );
 
                     genericMenuForInterfaceSettings.AddItem(
-                            EditorGUIUtility.TrTextContent("Time Stamp", "Pause the EditorApplication when tracing error"),
+                            EditorGUIUtility.TrTextContent("Show TimeStamp", "Pause the EditorApplication when tracing error"),
                             _timeStamp,
                             () =>
                             {
                                 _timeStamp = !_timeStamp;
+                            }
+                        );
+
+                    genericMenuForInterfaceSettings.AddItem(
+                            EditorGUIUtility.TrTextContent("Show Prefix", "Prefix, that will define the Owner/Source from this log"),
+                            _prefix,
+                            () =>
+                            {
+                                _prefix = !_prefix;
                             }
                         );
 
@@ -748,19 +766,23 @@
                         debugInfo.logType
                         );
 
+                    string finalCondition = "";
                     if (_timeStamp)
-                        condition = string.Format("[{0}]_", debugInfo.timeStamp) + condition;
+                        finalCondition += string.Format("[{0}]{1}", debugInfo.timeStamp, _prefix ? "__" : ":").ToString();
 
+                    if (_prefix)
+                        finalCondition += string.Format("[{0}]:", debugInfo.prefix).ToString();
+
+                    finalCondition += condition;
+
+                    GUIStyleForLog.normal.textColor = colorOfContent;
                     GUI.backgroundColor = IsSelectedLog(logIndex) ? _selectedLogColor : defaultBackgroundColor;
-
-                    GUI.contentColor = colorOfContent;
-                    if (GUILayout.Button(condition, GUIStyleForLog))
+                    if (GUILayout.Button(finalCondition, GUIStyleForLog))
                     {
                         _selectedLogIndex = logIndex;
-                        _selectedLogCondition = debugInfo.condition;
+                        _selectedLogCondition = finalCondition;
                         _selectedLogStackTrace = debugInfo.stackTrace;
                     }
-                    GUI.contentColor = defaultContentColor;
                     GUI.backgroundColor = defaultBackgroundColor;
                 }
                 EditorGUILayout.EndHorizontal();

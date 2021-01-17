@@ -97,8 +97,6 @@
             code += "\n\t}\n}";
 
             path += string.Format("{0}.{1}", nameOfEnum, "cs");
-            Debug.Log("Path = " + path);
-            Debug.Log("Code:\n" + code);
             using (StreamWriter streamWriter = new StreamWriter(path))
             {
                 streamWriter.Write(code);

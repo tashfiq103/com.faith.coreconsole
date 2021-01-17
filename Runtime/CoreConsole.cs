@@ -6,7 +6,7 @@
     {
         #region Global Access Point
 
-        internal const string _debugMessagePrefix = "[CoreConsole]";
+        internal const string DEBUG_MESSAGE_PREFIX = "[CoreConsole]";
 
         #endregion
 
@@ -16,6 +16,7 @@
         public class DebugInfo
         {
             public string timeStamp;
+            public string prefix;
             public string condition;
             public string stackTrace;
             public UnityEngine.LogType logType;
@@ -41,7 +42,7 @@
 
                 Debug.LogWarning(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     prefix == "" ? ": " : "_[" + prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -64,7 +65,7 @@
 
                 Debug.LogWarning(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     prefix == "" ? ": " : "_[" + prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -91,7 +92,7 @@
 
                 Debug.LogWarning(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -115,7 +116,7 @@
 
                 Debug.LogWarning(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -143,7 +144,7 @@
 
                 Debug.LogWarning(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -169,7 +170,7 @@
 
                 Debug.LogWarning(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -200,7 +201,7 @@
 
                 Debug.Log(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     prefix == "" ? ": " : "_[" + prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -225,7 +226,7 @@
 
                 Debug.Log(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     prefix == "" ? ": " : "_[" + prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -252,7 +253,7 @@
 
                 Debug.Log(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -278,7 +279,7 @@
 
                 UnityEngine.Debug.Log(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -306,7 +307,7 @@
 
                 Debug.Log(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -333,7 +334,7 @@
 
                 Debug.Log(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -363,7 +364,7 @@
 
                 Debug.LogError(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     prefix == "" ? ": " : "_[" + prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -388,7 +389,7 @@
 
                 Debug.LogError(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     prefix == "" ? ": " : "_[" + prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -413,7 +414,7 @@
 
                 Debug.LogError(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -437,7 +438,7 @@
 
                 Debug.LogError(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix),
@@ -465,7 +466,7 @@
 
                 Debug.LogError(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix));
@@ -491,7 +492,7 @@
 
                 Debug.LogError(string.Format("{0}{1}{2}{3}{4}",
                     hexColorPrefix,
-                    _debugMessagePrefix,
+                    DEBUG_MESSAGE_PREFIX,
                     configuretionFile.prefix == "" ? ": " : "_[" + configuretionFile.prefix + "]: ",
                     message,
                     hexColorPostfix),
