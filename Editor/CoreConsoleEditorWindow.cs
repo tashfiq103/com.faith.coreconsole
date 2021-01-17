@@ -506,6 +506,17 @@
                             }
                         );
 
+                    genericMenuForInterfaceSettings.AddSeparator("");
+
+                    genericMenuForInterfaceSettings.AddItem(
+                            EditorGUIUtility.TrTextContent("Open CoreConsoleViwer", "Open 'CoreConsoleViwer' to see all the configuretion files"),
+                            false,
+                            () =>
+                            {
+                                CoreConsoleViewrEditorWindow.ShowWindow();
+                            }
+                        );
+
                     genericMenuForInterfaceSettings.ShowAsContext();
                 }
 
@@ -522,6 +533,7 @@
 
                     GenericMenu genericMenuForGameConfiguretorSelection = new GenericMenu();
                     int numberOfOption = _gameConfiguretorOptionLabels.Length;
+
                     for (int i = 0; i < numberOfOption; i++)
                     {
 
@@ -566,6 +578,19 @@
                             },
                             i);
                     }
+
+                    if (numberOfOption == 0) {
+
+                        genericMenuForGameConfiguretorSelection.AddItem(
+                                EditorGUIUtility.TrTextContent("Create DefaultSettings", "Create 'DefaultSettings' for CoreConsole"),
+                                false,
+                                () =>
+                                {
+                                    CoreConsoleViewrEditorWindow.ShowWindow();
+                                }
+                            );
+                    }
+
                     genericMenuForGameConfiguretorSelection.ShowAsContext();
                 }
 
