@@ -2,8 +2,8 @@ namespace com.faith.coreconsole
 {
 	public enum  ConfiguretionFileID
 	{
-		NewDefaultSettings,
-		NewDefaultSettings1,
+		DefaultSettings,
+		DefaultSettings1,
 		none
 	}
 }

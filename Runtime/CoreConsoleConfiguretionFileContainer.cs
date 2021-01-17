@@ -102,9 +102,38 @@
                 streamWriter.Write(code);
             }
 
-            UnityEditor.AssetDatabase.Refresh();
+            CheckForDuplicatePrefix();
 
             OnEnumGenerationEnd?.Invoke();
+        }
+
+        private static void CheckForDuplicatePrefix() {
+
+            int numberOfConfiguretionFile = _arrayOfConfiguretionFile.Length;
+            for (int i = 0; i < numberOfConfiguretionFile; i++) {
+
+                if (string.IsNullOrEmpty(_arrayOfConfiguretionFile[i].prefix) || string.IsNullOrWhiteSpace(_arrayOfConfiguretionFile[i].prefix))
+                {
+                    _arrayOfConfiguretionFile[i].prefix = ((ConfiguretionFileID) i).ToString();
+                    UnityEditor.EditorUtility.SetDirty(_arrayOfConfiguretionFile[i]);
+                }
+
+                for (int j = 0; j < numberOfConfiguretionFile; j++) {
+
+                    if (i != j) {
+
+                        if (_arrayOfConfiguretionFile[i].prefix.Equals(_arrayOfConfiguretionFile[j].prefix)) {
+
+                            _arrayOfConfiguretionFile[j].prefix = ((ConfiguretionFileID)j).ToString();
+
+                            UnityEditor.EditorUtility.SetDirty(_arrayOfConfiguretionFile[j]);
+                        }
+                    }
+                }
+            }
+
+            UnityEditor.AssetDatabase.SaveAssets();
+            UnityEditor.AssetDatabase.Refresh();
         }
 
 #endif
