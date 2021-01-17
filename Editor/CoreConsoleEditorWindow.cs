@@ -681,8 +681,11 @@
 
                     for (int i = 0; i < numberOfLog; i++)
                     {
-
-                        DrawLog(_listOfDebugInfo[i].gameConfig, GUIStyleForLogDetail, _listOfDebugInfo[i].debugInfo, i);
+                        if (string.IsNullOrEmpty(_searchText) || string.IsNullOrWhiteSpace(_searchText))
+                            DrawLog(_listOfDebugInfo[i].gameConfig, GUIStyleForLogDetail, _listOfDebugInfo[i].debugInfo, i);
+                        else if(_listOfDebugInfo[i].debugInfo.condition.Contains(_searchText)){
+                            DrawLog(_listOfDebugInfo[i].gameConfig, GUIStyleForLogDetail, _listOfDebugInfo[i].debugInfo, i);
+                        }
                     }
 
                 }
