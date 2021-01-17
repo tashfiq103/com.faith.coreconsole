@@ -6,7 +6,7 @@
     {
         #region Global Access Point
 
-        public const string _debugMessagePrefix = "[CoreDebug]";
+        internal const string _debugMessagePrefix = "[CoreConsole]";
 
         #endregion
 

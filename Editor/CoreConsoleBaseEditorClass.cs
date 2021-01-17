@@ -3,7 +3,7 @@ namespace com.faith.coreconsole
 {
     using UnityEditor;
 
-    public class CoreConsoleBaseEditorClass : Editor
+    internal class CoreConsoleBaseEditorClass : Editor
     {
         protected static CoreConsoleEnums.PackageStatus _packageStatus = CoreConsoleEnums.PackageStatus.InDevelopment;
         protected float singleLineHeight;

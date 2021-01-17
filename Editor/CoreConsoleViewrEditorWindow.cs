@@ -5,11 +5,11 @@
     using System.IO;
     using System.Collections.Generic;
 
-    public class CoreConsoleViewrEditorWindow : CoreConsoleBaseEditorWindowClass
+    internal class CoreConsoleViewrEditorWindow : CoreConsoleBaseEditorWindowClass
     {
         #region Public Variables
 
-        public static CoreConsoleConfiguretionFile productionCoreConsoleAsset;
+        internal static CoreConsoleConfiguretionFile productionCoreConsoleAsset;
 
         #endregion
 
@@ -88,7 +88,7 @@
             }
         }
 
-        public static void UpdateListOfCoreConsoleAsset()
+        internal static void UpdateListOfCoreConsoleAsset()
         {
             _listOfCoreConsoleAsset = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
             _numberOfCoreConsoleAsset = _listOfCoreConsoleAsset.Count;

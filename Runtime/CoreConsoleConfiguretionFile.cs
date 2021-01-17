@@ -5,7 +5,6 @@
     using System.Collections.Generic;
 
 
-
     public class CoreConsoleConfiguretionFile : ScriptableObject
     {
         #region Global

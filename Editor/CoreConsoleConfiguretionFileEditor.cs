@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
 
     [CustomEditor(typeof(CoreConsoleConfiguretionFile))]
-    public class CoreConsoleConfiguretionFileEditor : CoreConsoleBaseEditorClass
+    internal class CoreConsoleConfiguretionFileEditor : CoreConsoleBaseEditorClass
     {
         #region Private Variables
 
@@ -133,7 +133,7 @@
                 if (_sp_isMarkedAsDefaultSetting.boolValue)
                 {
                     EditorGUILayout.Space();
-                    EditorGUILayout.HelpBox("The following configuretion asset is used in 'CoreConsoleManager'.\nIt can only be revoked if you assigned any other configuretion file for production", MessageType.Info);
+                    EditorGUILayout.HelpBox("The following configuretion file is now marked as 'DefaultSettings'", MessageType.Info);
                 }
                 else
                 {
@@ -141,7 +141,7 @@
                     if (_sp_isLinkedWithDefaultSetting.boolValue)
                     {
                         EditorGUILayout.Space();
-                        EditorGUILayout.HelpBox("The following configuretion is now synced with 'CoreConsoleManager'. To make it standalone, unlink it", MessageType.Info);
+                        EditorGUILayout.HelpBox("The following configuretion file is override by 'DefaultSettings'. To revoke the override, Go to 'Advance' and 'Uncheck' the 'Override by Default' option", MessageType.Info);
                     }
                 }
 
@@ -152,7 +152,19 @@
 
             if(!_sp_isLinkedWithDefaultSetting.boolValue) {
 
-                EditorGUILayout.PropertyField(_sp_logType);
+                EditorGUI.BeginChangeCheck();
+                {
+                    EditorGUILayout.PropertyField(_sp_logType);
+                }
+                if (EditorGUI.EndChangeCheck()) {
+
+                    if (_sp_isMarkedAsDefaultSetting.boolValue) {
+
+                        _sp_logType.serializedObject.ApplyModifiedProperties();
+                        CoreConsoleConfiguretionFile.GlobalLogType = (CoreConsoleEnums.LogType) _sp_logType.enumValueIndex;
+                    }
+                }
+                
                 EditorGUI.indentLevel += 1;
                 switch (_sp_logType.enumValueIndex)
                 {

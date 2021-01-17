@@ -5,12 +5,12 @@
     using System.IO;
     using System.Collections.Generic;
 
-    public class CoreConsoleEditorUtility : Editor
+    internal class CoreConsoleEditorUtility : Editor
     {
         
         #region Editor Module   :   GUI
 
-        public static void ShowScriptReference(SerializedObject serializedObject)
+        internal static void ShowScriptReference(SerializedObject serializedObject)
         {
 
             EditorGUI.BeginDisabledGroup(true);
@@ -18,17 +18,17 @@
             EditorGUI.EndDisabledGroup();
         }
 
-        public static void DrawHorizontalLine()
+        internal static void DrawHorizontalLine()
         {
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
 
-        public static void DrawHorizontalLineOnGUI(Rect rect)
+        internal static void DrawHorizontalLineOnGUI(Rect rect)
         {
             EditorGUI.LabelField(rect, "", GUI.skin.horizontalSlider);
         }
 
-        public static void DrawSettingsEditor(Object settings, System.Action OnSettingsUpdated, ref bool foldout, ref Editor editor, int indentValue = 0)
+        internal static void DrawSettingsEditor(Object settings, System.Action OnSettingsUpdated, ref bool foldout, ref Editor editor, int indentValue = 0)
         {
 
             if (settings != null)
@@ -67,13 +67,13 @@
 
         #region Editor Module   :   Asset
 
-        public static List<T> GetAsset<T>(bool returnIfGetAny = false, params string[] directoryFilters)
+        internal static List<T> GetAsset<T>(bool returnIfGetAny = false, params string[] directoryFilters)
         {
 
             return GetAsset<T>("t:" + typeof(T).ToString().Replace("UnityEngine.", ""), returnIfGetAny, directoryFilters);
         }
 
-        public static List<T> GetAsset<T>(string nameFilter, bool returnIfGetAny = false, params string[] directoryFilters)
+        internal static List<T> GetAsset<T>(string nameFilter, bool returnIfGetAny = false, params string[] directoryFilters)
         {
 
             List<T> listOfAsset = new List<T>();
@@ -97,7 +97,7 @@
 
         #region Editor Module   :   CodeGenerator
 
-        public static void GenerateEnum(string path, string nameSpace, string nameOfEnum, params string[] enumValue) {
+        internal static void GenerateEnum(string path, string nameSpace, string nameOfEnum, params string[] enumValue) {
 
             string code = "";
 
@@ -125,7 +125,7 @@
 
         #region Editor Module   :   UnityTechnology
 
-        public static bool DropDownToggle(ref bool toggled, GUIContent content, GUIStyle toggleButtonStyle)
+        internal static bool DropDownToggle(ref bool toggled, GUIContent content, GUIStyle toggleButtonStyle)
         {
             Rect toggleRect = GUILayoutUtility.GetRect(content, toggleButtonStyle);
             Rect arrowRightRect = new Rect(toggleRect.xMax - toggleButtonStyle.padding.right, toggleRect.y, toggleButtonStyle.padding.right, toggleRect.height);

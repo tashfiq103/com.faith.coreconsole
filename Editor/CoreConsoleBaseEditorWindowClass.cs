@@ -2,7 +2,7 @@
 {
     using UnityEditor;
 
-    public class CoreConsoleBaseEditorWindowClass : EditorWindow
+    internal class CoreConsoleBaseEditorWindowClass : EditorWindow
     {
         protected static CoreConsoleEnums.PackageStatus _packageStatus = CoreConsoleEnums.PackageStatus.InDevelopment;
 

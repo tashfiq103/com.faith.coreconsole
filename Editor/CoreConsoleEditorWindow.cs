@@ -6,14 +6,14 @@
     using UnityEditor.Build.Reporting;
     using System.Collections.Generic;
 
-    public class CoreConsoleEditorWindow : CoreConsoleBaseEditorWindowClass, IPreprocessBuildWithReport
+    internal class CoreConsoleEditorWindow : CoreConsoleBaseEditorWindowClass, IPreprocessBuildWithReport
     {
         #region Custom Variables
 
         private class ConsoleDebugInfo
         {
-            public CoreConsoleConfiguretionFile gameConfig;
-            public CoreConsole.DebugInfo debugInfo;
+            internal CoreConsoleConfiguretionFile gameConfig;
+            internal CoreConsole.DebugInfo debugInfo;
         }
 
         #endregion
