@@ -26,12 +26,36 @@
 
         #region Private Variables
 
-        private static List<CoreConsoleEditorWindow> _listOfEditorWindowOfCoreConsole;
-        private static List<CoreConsoleConfiguretionFile> _listOfGameConfiguretorAsset = new List<CoreConsoleConfiguretionFile>();
+        internal static List<CoreConsoleEditorWindow> _listOfEditorWindowOfCoreConsole;
+        internal static List<CoreConsoleConfiguretionFile> _listOfGameConfiguretorAsset = new List<CoreConsoleConfiguretionFile>();
         internal const float defaultConsoleWidth = 480f;
         internal const float defaultConsoleHeight= 480f;
-        internal const float minConsoleHeightForLogList = 336f;
-        internal const float minConsoleHeightForLogInfo = 144f;
+
+        internal const float minConsoleHeightRatioForLogList = 0.7f;
+        internal const float minConsoleHeightRatioForLogInfo = 0.3f;
+
+        internal const float minHeightOfLogList = defaultConsoleHeight * minConsoleHeightRatioForLogList;
+        internal const float minHeightOfLogInfo = defaultConsoleHeight * minConsoleHeightRatioForLogInfo;
+        
+
+        [SerializeField] private bool _isClearOnEnteringPlayMode;
+        [SerializeField] private bool _isClearOnBuild;
+
+        [SerializeField] private bool _errorPause;
+        [SerializeField] private bool _timeStamp;
+
+
+        [SerializeField] private bool _enableInfoLog = true;
+        [SerializeField] private bool _enableLogWarning = true;
+        [SerializeField] private bool _enableLogError = true;
+
+        [SerializeField] private float _heightOfLogList;
+        [SerializeField] private float _heightOfLogInfo;
+
+        [SerializeField] private bool[] _gameConfiguretorEnableStatus;
+        [SerializeField] private string[] _gameConfiguretorOptionLabels;
+
+        private CoreConsoleEditorWindow _editorWindowOfCoreConsole;
 
         private GUIContent _GUIContentForClearDropdownButton = new GUIContent();
 
@@ -43,28 +67,13 @@
         private GUIContent _GUIContentForTogglingWarningLog = new GUIContent();
         private GUIContent _GUIContentForTogglingErrorLog = new GUIContent();
 
-        
-
         private GUIContent _GUIContentForInfoLog = new GUIContent();
         private GUIContent _GUIContentForWarningLog = new GUIContent();
         private GUIContent _GUIContentForErrorLog = new GUIContent();
 
         private GUIContent _GUIContentForLogMessage = new GUIContent();
 
-
-        [SerializeField] private bool _isClearOnEnteringPlayMode;
-        [SerializeField] private bool _isClearOnBuild;
-
-        [SerializeField] private bool _errorPause;
-        [SerializeField] private bool _timeStamp;
-
-        private string  _searchText = "";
-
-        [SerializeField] private bool _enableInfoLog = true;
-        [SerializeField] private bool _enableLogWarning = true;
-        [SerializeField] private bool _enableLogError = true;
-
-        
+        private string _searchText = "";
 
         private float _contentHeightForLogsInList = 30;
 
@@ -78,8 +87,7 @@
         private Color defaultBackgroundColor;
         private Color defaultContentColor;
 
-        [SerializeField] private bool[] _gameConfiguretorEnableStatus;
-        [SerializeField] private string[] _gameConfiguretorOptionLabels;
+        
 
         #endregion
 
@@ -121,6 +129,8 @@
         {
             base.OnEnable();
 
+            _editorWindowOfCoreConsole = this;
+
             if (_listOfEditorWindowOfCoreConsole == null)
                 _listOfEditorWindowOfCoreConsole = new List<CoreConsoleEditorWindow>();
 
@@ -136,18 +146,21 @@
 
         public void OnGUI()
         {
-
             HeaderGUI();
+
 
             DrawLogListGUI();
 
             DrawLogMessageGUI();
+
 
         }
 
         public void OnInspectorUpdate()
         {
             Repaint();
+
+            
 
         }
 
@@ -399,19 +412,18 @@
 
         private void CreateCoreConsole()
         {
-
-
             UpdateGameConfiguretorAsset();
 
             string title = "CoreConsole";
 
-            CoreConsoleEditorWindow editorWindowOfCoreConsole = GetWindow<CoreConsoleEditorWindow>(title, typeof(CoreConsoleEditorWindow));
+            _editorWindowOfCoreConsole = GetWindow<CoreConsoleEditorWindow>(title, typeof(CoreConsoleEditorWindow));
 
-            editorWindowOfCoreConsole.titleContent.text = title;
-            editorWindowOfCoreConsole.minSize = new Vector2(defaultConsoleWidth, defaultConsoleHeight);
-            editorWindowOfCoreConsole.Show();
 
-            _listOfEditorWindowOfCoreConsole.Add(editorWindowOfCoreConsole);
+            _editorWindowOfCoreConsole.titleContent.text = title;
+            _editorWindowOfCoreConsole.minSize = new Vector2(defaultConsoleWidth, defaultConsoleHeight);
+            _editorWindowOfCoreConsole.Show();
+
+            _listOfEditorWindowOfCoreConsole.Add(_editorWindowOfCoreConsole);
 
         }
 
@@ -421,7 +433,7 @@
 
         private void HeaderGUI()
         {
-            EditorGUILayout.BeginHorizontal(GUI.skin.box);
+            EditorGUILayout.BeginHorizontal(GUI.skin.box, GUILayout.Height(EditorGUIUtility.singleLineHeight));
             {
 
                 bool clearClicked = false;
@@ -612,8 +624,9 @@
 
         private void DrawLogListGUI()
         {
-
-            EditorGUILayout.BeginVertical();
+            _heightOfLogList = position.height * minConsoleHeightRatioForLogList;
+            _heightOfLogList = _heightOfLogList < minConsoleHeightRatioForLogList ? minConsoleHeightRatioForLogList : _heightOfLogList;
+            EditorGUILayout.BeginVertical(GUILayout.Height(_heightOfLogList));
             {
                 _scrollPositionForListOfLog = EditorGUILayout.BeginScrollView(_scrollPositionForListOfLog);
                 {
@@ -758,8 +771,13 @@
 
         private void DrawLogMessageGUI()
         {
-            EditorGUILayout.BeginVertical(GUI.skin.box, GUILayout.Height(128));
+            _heightOfLogInfo = position.height * minConsoleHeightRatioForLogList;
+            _heightOfLogInfo = _heightOfLogInfo < minConsoleHeightRatioForLogInfo ? minConsoleHeightRatioForLogInfo : _heightOfLogInfo;
+
+
+            EditorGUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(position.width), GUILayout.Height(_heightOfLogInfo));
             {
+                
                 _scrollPositionForLogMessage = EditorGUILayout.BeginScrollView(_scrollPositionForLogMessage);
                 {
                     if (IsSelectedLog(_selectedLogIndex))
