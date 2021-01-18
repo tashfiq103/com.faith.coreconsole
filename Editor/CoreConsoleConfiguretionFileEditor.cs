@@ -258,84 +258,87 @@
 
                 if (_sp_logType.enumValueIndex != 3)
                 {
-
                     CoreConsoleEditorUtility.DrawHorizontalLine();
 
-                    EditorGUI.BeginChangeCheck();
-                    _sp_isStackTraceEnabled.boolValue = EditorGUILayout.Foldout(
-                            _sp_isStackTraceEnabled.boolValue,
-                            "StackTrace",
-                            true
-                        );
-                    if (EditorGUI.EndChangeCheck())
+                    if (!EditorApplication.isPlaying)
                     {
-                        _sp_isStackTraceEnabled.serializedObject.ApplyModifiedProperties();
-
-                        if (_sp_isMarkedAsDefaultSetting.boolValue)
+                        EditorGUI.BeginChangeCheck();
+                        _sp_isStackTraceEnabled.boolValue = EditorGUILayout.Foldout(
+                                _sp_isStackTraceEnabled.boolValue,
+                                "StackTrace",
+                                true
+                            );
+                        if (EditorGUI.EndChangeCheck())
                         {
-                            CoreConsoleConfiguretionFile.globalEnableStackTrace = _sp_isStackTraceEnabled.boolValue;
-                            if (CoreConsoleConfiguretionFile.globalEnableStackTrace) {
+                            _sp_isStackTraceEnabled.serializedObject.ApplyModifiedProperties();
 
-                                List<CoreConsoleConfiguretionFile> _listOfCoreConsoleConfiguretionFile = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
-                                foreach (CoreConsoleConfiguretionFile coreConsoleConfiguretionFile in _listOfCoreConsoleConfiguretionFile) {
+                            if (_sp_isMarkedAsDefaultSetting.boolValue)
+                            {
+                                CoreConsoleConfiguretionFile.globalEnableStackTrace = _sp_isStackTraceEnabled.boolValue;
+                                if (CoreConsoleConfiguretionFile.globalEnableStackTrace)
+                                {
 
-                                    SerializedObject serializedCoreConsoleConfiguretionAsset = new SerializedObject(coreConsoleConfiguretionFile);
-                                    SerializedProperty serailizedStackTrace = serializedCoreConsoleConfiguretionAsset.FindProperty("_isStackTraceEnabled");
+                                    List<CoreConsoleConfiguretionFile> _listOfCoreConsoleConfiguretionFile = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
+                                    foreach (CoreConsoleConfiguretionFile coreConsoleConfiguretionFile in _listOfCoreConsoleConfiguretionFile)
+                                    {
 
-                                    serailizedStackTrace.boolValue = true;
-                                    serailizedStackTrace.serializedObject.ApplyModifiedProperties();
-                                    serializedCoreConsoleConfiguretionAsset.ApplyModifiedProperties();
+                                        SerializedObject serializedCoreConsoleConfiguretionAsset = new SerializedObject(coreConsoleConfiguretionFile);
+                                        SerializedProperty serailizedStackTrace = serializedCoreConsoleConfiguretionAsset.FindProperty("_isStackTraceEnabled");
 
-                                    EditorUtility.SetDirty(coreConsoleConfiguretionFile);
+                                        serailizedStackTrace.boolValue = true;
+                                        serailizedStackTrace.serializedObject.ApplyModifiedProperties();
+                                        serializedCoreConsoleConfiguretionAsset.ApplyModifiedProperties();
+
+                                        EditorUtility.SetDirty(coreConsoleConfiguretionFile);
+                                    }
                                 }
+
+                                AssetDatabase.SaveAssets();
+                                AssetDatabase.Refresh();
                             }
 
-                            AssetDatabase.SaveAssets();
-                            AssetDatabase.Refresh();
+                            if (_sp_isStackTraceEnabled.boolValue)
+                            {
+                                _reference.EnableStackTrace();
+                            }
+                            else
+                            {
+
+                                _reference.DisableStackTrace();
+                                _sp_listOfLogInfo.ClearArray();
+                                _sp_listOfLogInfo.serializedObject.ApplyModifiedProperties();
+                            }
                         }
 
                         if (_sp_isStackTraceEnabled.boolValue)
                         {
-                            _reference.EnableStackTrace();
-                        }
-                        else {
 
-                            _reference.DisableStackTrace();
-                            _sp_listOfLogInfo.ClearArray();
-                            _sp_listOfLogInfo.serializedObject.ApplyModifiedProperties();
-                        }
-                    }
+                            EditorGUI.indentLevel += 1;
 
-                    if (_sp_isStackTraceEnabled.boolValue)
-                    {
-
-                        EditorGUI.indentLevel += 1;
-
-                        EditorGUILayout.BeginHorizontal();
-                        {
-                            EditorGUILayout.PropertyField(_sp_clearLogType);
-                            if (GUILayout.Button("Clear", GUILayout.Width(75)))
+                            EditorGUILayout.BeginHorizontal();
                             {
-                                _reference.ClearLog((LogType)_sp_clearLogType.enumValueIndex);
+                                EditorGUILayout.PropertyField(_sp_clearLogType);
+                                if (GUILayout.Button("Clear", GUILayout.Width(75)))
+                                {
+                                    _reference.ClearLog((LogType)_sp_clearLogType.enumValueIndex);
+                                }
+
+                                Color defaultContentColor = GUI.contentColor;
+                                GUI.contentColor = Color.yellow;
+                                EditorGUILayout.LabelField("|", EditorStyles.boldLabel, GUILayout.Width(5));
+                                GUI.contentColor = defaultContentColor;
+
+                                if (GUILayout.Button("ClearAll", GUILayout.Width(75)))
+                                {
+                                    _reference.ClearAllLog();
+                                }
                             }
+                            EditorGUILayout.EndHorizontal();
 
-                            Color defaultContentColor = GUI.contentColor;
-                            GUI.contentColor = Color.yellow;
-                            EditorGUILayout.LabelField("|", EditorStyles.boldLabel, GUILayout.Width(5));
-                            GUI.contentColor = defaultContentColor;
-
-                            if (GUILayout.Button("ClearAll", GUILayout.Width(75)))
-                            {
-                                _reference.ClearAllLog();
-                            }
-                        }
-                        EditorGUILayout.EndHorizontal();
-
-                        if (!EditorApplication.isPlaying)
-                        {
                             EditorGUI.BeginChangeCheck();
                             EditorGUILayout.PropertyField(_sp_numberOfLog);
-                            if (EditorGUI.EndChangeCheck()) {
+                            if (EditorGUI.EndChangeCheck())
+                            {
 
                                 _sp_numberOfLog.serializedObject.ApplyModifiedProperties();
 
@@ -343,17 +346,19 @@
                                     CoreConsoleConfiguretionFile.globalNumberOfLog = _sp_numberOfLog.intValue;
                             }
 
-                        }
-                        else
-                            EditorGUILayout.LabelField("MaxLogSize : " + _sp_numberOfLog.intValue, EditorStyles.boldLabel);
+                            EditorGUI.BeginDisabledGroup(true);
+                            {
+                                EditorGUILayout.PropertyField(_sp_listOfLogInfo);
+                            }
+                            EditorGUI.EndDisabledGroup();
 
-                        EditorGUI.BeginDisabledGroup(true);
-                        {
-                            EditorGUILayout.PropertyField(_sp_listOfLogInfo);
+                            EditorGUI.indentLevel -= 1;
                         }
-                        EditorGUI.EndDisabledGroup();
 
-                        EditorGUI.indentLevel -= 1;
+                    }
+                    else {
+
+                        EditorGUILayout.HelpBox("You can Enable/Disable 'StackTrace' when editor is not in playmode", MessageType.Info);
                     }
                 }
 
