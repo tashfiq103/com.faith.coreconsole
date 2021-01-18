@@ -148,6 +148,26 @@
         public static void FetchCoreConsoleConfiguretionFile()
         {
             _arrayOfConfiguretionFile = Resources.LoadAll<CoreConsoleConfiguretionFile>("ConfiguretionFile");
+
+            CoreConsoleConfiguretionFile defaultSettings = null;
+
+            foreach (CoreConsoleConfiguretionFile coreConsoleSetting in _arrayOfConfiguretionFile) {
+
+                if (coreConsoleSetting.IsDefaultSettings)
+                {
+                    coreConsoleSetting.AssignGlobalValueForDefaultSetting();
+                    defaultSettings = coreConsoleSetting;
+                    break;
+                }
+            }
+
+            foreach (CoreConsoleConfiguretionFile coreConsoleSetting in _arrayOfConfiguretionFile) {
+
+                if (defaultSettings != coreConsoleSetting) {
+
+                    coreConsoleSetting.EnableStackTrace();
+                }
+            }
         }
 
 

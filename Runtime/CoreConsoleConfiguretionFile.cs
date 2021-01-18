@@ -10,11 +10,11 @@
         #region Global
 
         public static CoreConsoleEnums.LogType GlobalLogType    = CoreConsoleEnums.LogType.Verbose;
-        public static bool  globalEnableStackTrace              = false;
-        public static int   globalNumberOfLog                   = 100;
-        public static Color globalColorForLog                   = Color.white;
-        public static Color globalColorForLogWarning            = Color.yellow;
-        public static Color globalColorForLogError              = Color.red;
+        public static bool  GlobalEnableStackTrace              = false;
+        public static int   GlobalNumberOfLog                   = 100;
+        public static Color GlobalColorForLog                   = Color.white;
+        public static Color GlobalColorForLogWarning            = Color.yellow;
+        public static Color GlobalColorForLogError              = Color.red;
 
         #endregion
 
@@ -47,6 +47,12 @@
 
 #endif
 
+        public bool IsDefaultSettings
+        {
+            get {
+                return _isMarkedAsDefaultSetting;
+            }
+        }
         
         public string Prefix {
             get {
@@ -60,35 +66,35 @@
         }
         public Color ColorForLog {
             get {
-                return _isLinkedWithDefaultSetting ? globalColorForLog : _colorForLog;
+                return _isLinkedWithDefaultSetting ? GlobalColorForLog : _colorForLog;
             }
         }
         public Color ColorForWarning
         {
             get
             {
-                return _isLinkedWithDefaultSetting ? globalColorForLogWarning : _colorForWarning;
+                return _isLinkedWithDefaultSetting ? GlobalColorForLogWarning : _colorForWarning;
             }
         }
         public Color ColorForLogError
         {
             get
             {
-                return _isLinkedWithDefaultSetting ? globalColorForLogError : _colorForLogError;
+                return _isLinkedWithDefaultSetting ? GlobalColorForLogError : _colorForLogError;
             }
         }
 
         public bool IsStackTraceEnabled
         {
             get {
-                return _isLinkedWithDefaultSetting ? globalEnableStackTrace : _isStackTraceEnabled;
+                return _isLinkedWithDefaultSetting ? GlobalEnableStackTrace : _isStackTraceEnabled;
             }
         }
         public int NumberOfLog
         {
             get {
 
-                return _isLinkedWithDefaultSetting ? globalNumberOfLog : _numberOfLog;
+                return _isLinkedWithDefaultSetting ? GlobalNumberOfLog : _numberOfLog;
             }
         }
         #endregion
@@ -97,23 +103,16 @@
         //Region Seperator
         //--------------------
         #region ScriptableObject
-
+        
 
         private void OnEnable()
         {
-            
-            if (IsStackTraceEnabled)
-            {
-                EnableStackTrace();
-            }
+            EnableStackTrace();
         }
 
         private void OnDisable()
         {
-            if (IsStackTraceEnabled)
-            {
-                DisableStackTrace();
-            }
+            DisableStackTrace();
         }
 
 
@@ -123,6 +122,8 @@
         //Region Seperator
         //--------------------
         #region Configuretion
+
+        
 
         private void LogMessageReciever(string condition, string stackTrace, UnityEngine.LogType logType)
         {
@@ -152,16 +153,38 @@
         //--------------------
         #region Public Callback
 
+        public void AssignGlobalValueForDefaultSetting()
+        {
+
+            if (_isMarkedAsDefaultSetting)
+            {
+
+                GlobalLogType = _logType;
+
+                GlobalEnableStackTrace = _isStackTraceEnabled;
+                GlobalNumberOfLog = _numberOfLog;
+
+                GlobalColorForLog = _colorForLog;
+                GlobalColorForLogWarning = _colorForWarning;
+                GlobalColorForLogError = _colorForLogError;
+            }
+        }
 
         public void EnableStackTrace() {
 
-            if (_listOfLogInfo == null) _listOfLogInfo = new List<CoreConsole.DebugInfo>();
-            Application.logMessageReceivedThreaded += LogMessageReciever;
+            if (IsStackTraceEnabled) {
+
+                if (_listOfLogInfo == null) _listOfLogInfo = new List<CoreConsole.DebugInfo>();
+                Application.logMessageReceivedThreaded += LogMessageReciever;
+            }
+
+            
         }
 
         public void DisableStackTrace()
         {
-            Application.logMessageReceivedThreaded -= LogMessageReciever;
+            if (IsStackTraceEnabled)
+                Application.logMessageReceivedThreaded -= LogMessageReciever;
         }
 
         public void ClearAllLog()

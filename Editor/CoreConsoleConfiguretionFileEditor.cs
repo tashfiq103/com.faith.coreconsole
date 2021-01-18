@@ -126,7 +126,7 @@
 
                                         if (_sp_isLinkedWithDefaultSetting.boolValue) {
 
-                                            if (CoreConsoleConfiguretionFile.globalEnableStackTrace)
+                                            if (CoreConsoleConfiguretionFile.GlobalEnableStackTrace)
                                                 _reference.EnableStackTrace();
                                             else
                                                 _reference.DisableStackTrace();
@@ -191,7 +191,7 @@
                             _sp_colorForLogError.serializedObject.ApplyModifiedProperties();
 
                             if (_sp_isMarkedAsDefaultSetting.boolValue)
-                                CoreConsoleConfiguretionFile.globalColorForLogError = _sp_colorForLogError.colorValue;
+                                CoreConsoleConfiguretionFile.GlobalColorForLogError = _sp_colorForLogError.colorValue;
                         }
 
                         break;
@@ -204,7 +204,7 @@
                             _sp_colorForLog.serializedObject.ApplyModifiedProperties();
 
                             if (_sp_isMarkedAsDefaultSetting.boolValue)
-                                CoreConsoleConfiguretionFile.globalColorForLog = _sp_colorForLog.colorValue;
+                                CoreConsoleConfiguretionFile.GlobalColorForLog = _sp_colorForLog.colorValue;
                         }
 
                         EditorGUI.BeginChangeCheck();
@@ -215,7 +215,7 @@
                             _sp_colorForLogError.serializedObject.ApplyModifiedProperties();
 
                             if (_sp_isMarkedAsDefaultSetting.boolValue)
-                                CoreConsoleConfiguretionFile.globalColorForLogError = _sp_colorForLogError.colorValue;
+                                CoreConsoleConfiguretionFile.GlobalColorForLogError = _sp_colorForLogError.colorValue;
                         }
 
                         break;
@@ -229,7 +229,7 @@
                             _sp_colorForLog.serializedObject.ApplyModifiedProperties();
 
                             if (_sp_isMarkedAsDefaultSetting.boolValue)
-                                CoreConsoleConfiguretionFile.globalColorForLog = _sp_colorForLog.colorValue;
+                                CoreConsoleConfiguretionFile.GlobalColorForLog = _sp_colorForLog.colorValue;
                         }
 
                         EditorGUI.BeginChangeCheck();
@@ -240,7 +240,7 @@
                             _sp_colorForLogWarning.serializedObject.ApplyModifiedProperties();
 
                             if (_sp_isMarkedAsDefaultSetting.boolValue)
-                                CoreConsoleConfiguretionFile.globalColorForLogWarning = _sp_colorForLogWarning.colorValue;
+                                CoreConsoleConfiguretionFile.GlobalColorForLogWarning = _sp_colorForLogWarning.colorValue;
                         }
 
                         EditorGUI.BeginChangeCheck();
@@ -251,7 +251,7 @@
                             _sp_colorForLogError.serializedObject.ApplyModifiedProperties();
 
                             if (_sp_isMarkedAsDefaultSetting.boolValue)
-                                CoreConsoleConfiguretionFile.globalColorForLogError = _sp_colorForLogError.colorValue;
+                                CoreConsoleConfiguretionFile.GlobalColorForLogError = _sp_colorForLogError.colorValue;
                         }
                         break;
                 }
@@ -274,8 +274,8 @@
 
                             if (_sp_isMarkedAsDefaultSetting.boolValue)
                             {
-                                CoreConsoleConfiguretionFile.globalEnableStackTrace = _sp_isStackTraceEnabled.boolValue;
-                                if (CoreConsoleConfiguretionFile.globalEnableStackTrace)
+                                CoreConsoleConfiguretionFile.GlobalEnableStackTrace = _sp_isStackTraceEnabled.boolValue;
+                                if (CoreConsoleConfiguretionFile.GlobalEnableStackTrace)
                                 {
 
                                     List<CoreConsoleConfiguretionFile> _listOfCoreConsoleConfiguretionFile = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
@@ -343,7 +343,7 @@
                                 _sp_numberOfLog.serializedObject.ApplyModifiedProperties();
 
                                 if (_sp_isMarkedAsDefaultSetting.boolValue)
-                                    CoreConsoleConfiguretionFile.globalNumberOfLog = _sp_numberOfLog.intValue;
+                                    CoreConsoleConfiguretionFile.GlobalNumberOfLog = _sp_numberOfLog.intValue;
                             }
 
                             EditorGUI.BeginDisabledGroup(true);
