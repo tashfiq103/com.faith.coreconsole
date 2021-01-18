@@ -42,8 +42,8 @@
         [SerializeField] private bool _isClearOnBuild;
 
         [SerializeField] private bool _errorPause;
-        [SerializeField] private bool _prefix;
-        [SerializeField] private bool _timeStamp;
+        [SerializeField] private bool _showPrefix;
+        [SerializeField] private bool _showTimeStamp;
 
 
         [SerializeField] private bool _enableInfoLog = true;
@@ -388,7 +388,7 @@
                 for (int i = 0; i < numberOfConfiguretorAsset; i++)
                 {
 
-                    string prefix = _listOfGameConfiguretorAsset[i].prefix;
+                    string prefix = _listOfGameConfiguretorAsset[i].Prefix;
                     if (string.IsNullOrEmpty(prefix) || string.IsNullOrWhiteSpace(prefix))
                     {
                         prefix = _listOfGameConfiguretorAsset[i].name;
@@ -489,19 +489,19 @@
 
                     genericMenuForInterfaceSettings.AddItem(
                             EditorGUIUtility.TrTextContent("Show TimeStamp", "Pause the EditorApplication when tracing error"),
-                            _timeStamp,
+                            _showTimeStamp,
                             () =>
                             {
-                                _timeStamp = !_timeStamp;
+                                _showTimeStamp = !_showTimeStamp;
                             }
                         );
 
                     genericMenuForInterfaceSettings.AddItem(
                             EditorGUIUtility.TrTextContent("Show Prefix", "Prefix, that will define the Owner/Source from this log"),
-                            _prefix,
+                            _showPrefix,
                             () =>
                             {
-                                _prefix = !_prefix;
+                                _showPrefix = !_showPrefix;
                             }
                         );
 
@@ -791,10 +791,10 @@
                         );
 
                     string finalCondition = "";
-                    if (_timeStamp)
-                        finalCondition += string.Format("[{0}]{1}", debugInfo.timeStamp, _prefix ? "__" : ":").ToString();
+                    if (_showTimeStamp)
+                        finalCondition += string.Format("[{0}]{1}", debugInfo.timeStamp, _showPrefix ? "__" : ":").ToString();
 
-                    if (_prefix)
+                    if (_showPrefix)
                         finalCondition += string.Format("[{0}]:", debugInfo.prefix).ToString();
 
                     finalCondition += condition;

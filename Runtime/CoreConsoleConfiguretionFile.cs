@@ -19,6 +19,7 @@
         [SerializeField] private bool _isLinkedWithDefaultSetting = false;
 
         [SerializeField] private string _name;
+        [SerializeField] private string _prefix = "";
         [SerializeField] private bool _enableStackTrace;
         [SerializeField, Range(10, 999)] private int _numberOfLog = 100;
         [SerializeField] private LogType _clearLogType;
@@ -39,8 +40,8 @@
 
         public int NumberOfLog { get { return _listOfLogInfo.Count; } }
         public CoreConsoleEnums.LogType logType { get { return _isLinkedWithDefaultSetting ? GlobalLogType : _logType; } }
+        public string Prefix { get { return _prefix; } }
 
-        public string prefix = "";
         public Color colorForLog = new Color();
         public Color colorForWarning = Color.yellow;
         public Color colorForLogError = Color.red;
@@ -86,14 +87,14 @@
         private void LogMessageReciever(string condition, string stackTrace, UnityEngine.LogType logType)
         {
 
-            if (string.IsNullOrEmpty(prefix) || string.IsNullOrWhiteSpace(prefix))
-            {
-                Debug.LogWarning(string.Format("No prefix was found for [{0}]_['{1}']. Assigning it's name as new prefix = {2}", CoreConsole.DEBUG_MESSAGE_PREFIX, prefix, name));
-                prefix = name;
-                return;
-            }
+            //if (string.IsNullOrEmpty(_prefix) || string.IsNullOrWhiteSpace(_prefix))
+            //{
+            //    Debug.LogWarning(string.Format("No prefix was found for [{0}]_['{1}']. Assigning it's name as new prefix = {2}", CoreConsole.DEBUG_MESSAGE_PREFIX, _prefix, name));
+            //    _prefix = name;
+            //    return;
+            //}
 
-            string filter = string.Format("{0}_[{1}]", CoreConsole.DEBUG_MESSAGE_PREFIX, prefix);
+            string filter = string.Format("{0}_[{1}]", CoreConsole.DEBUG_MESSAGE_PREFIX, _prefix);
             if (condition.Contains(filter))
             {
 
@@ -103,7 +104,7 @@
                 _listOfLogInfo.Add(new CoreConsole.DebugInfo()
                 {
                     timeStamp = DateTime.Now.ToString(),
-                    prefix = prefix,
+                    prefix = _prefix,
                     condition = condition,
                     stackTrace = stackTrace,
                     logType = logType

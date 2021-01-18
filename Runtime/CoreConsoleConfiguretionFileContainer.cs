@@ -6,6 +6,13 @@
     using System.Text;
     using System.Threading.Tasks;
 
+#if UNITY_EDITOR
+
+    using UnityEditor;
+
+#endif
+
+
     [DefaultExecutionOrder(CoreConsoleConstants.EXECUTION_ORDER_FOR_CONFIGUREION_FILE_CONTAINER)]
     public class CoreConsoleConfiguretionFileContainer
     {
@@ -32,7 +39,7 @@
             string path = "";
 
             //Defining  :   Path
-            if (UnityEditor.AssetDatabase.FindAssets(nameSpace, new string[] { "Packages" }).Length > 0)
+            if (AssetDatabase.FindAssets(nameSpace, new string[] { "Packages" }).Length > 0)
             {
                 path = string.Format("{0}/{1}/Runtime/", "Packages", nameSpace);
             }
@@ -70,7 +77,7 @@
 
                     if (string.Equals(filtererdNameOfEnum[i], filtererdNameOfEnum[j])) {
 
-                        bool result = UnityEditor.EditorUtility.DisplayDialog(
+                        bool result = EditorUtility.DisplayDialog(
                                 "Failed to generate enum",
                                 string.Format("Configuretion files '{0} : {1}' <> '{2} : {3}' are having same name as enum, please rename your configuretion file to resolve this issue and press 'Refresh' from the 'Control Panel'",
                                 _arrayOfConfiguretionFile[i].name,
@@ -102,38 +109,37 @@
                 streamWriter.Write(code);
             }
 
-            CheckForDuplicatePrefix();
+            CheckForDuplicatePrefix(filtererdNameOfEnum);
 
             OnEnumGenerationEnd?.Invoke();
         }
 
-        private static void CheckForDuplicatePrefix() {
+        private static void CheckForDuplicatePrefix(string[] enumNames) {
 
             int numberOfConfiguretionFile = _arrayOfConfiguretionFile.Length;
             for (int i = 0; i < numberOfConfiguretionFile; i++) {
 
-                if (string.IsNullOrEmpty(_arrayOfConfiguretionFile[i].prefix) || string.IsNullOrWhiteSpace(_arrayOfConfiguretionFile[i].prefix))
-                {
-                    _arrayOfConfiguretionFile[i].prefix = ((ConfiguretionFileID) i).ToString();
-                    UnityEditor.EditorUtility.SetDirty(_arrayOfConfiguretionFile[i]);
-                }
+                SerializedProperty _prefixProperty = new SerializedObject(_arrayOfConfiguretionFile[i]).FindProperty("_prefix");
+                _prefixProperty.stringValue = enumNames[i];
+                _prefixProperty.serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty(_arrayOfConfiguretionFile[i]);
 
                 for (int j = 0; j < numberOfConfiguretionFile; j++) {
 
                     if (i != j) {
 
-                        if (_arrayOfConfiguretionFile[i].prefix.Equals(_arrayOfConfiguretionFile[j].prefix)) {
+                        if (_arrayOfConfiguretionFile[i].Prefix.Equals(_arrayOfConfiguretionFile[j].Prefix)) {
 
-                            _arrayOfConfiguretionFile[j].prefix = ((ConfiguretionFileID)j).ToString();
+                            new SerializedObject(_arrayOfConfiguretionFile[j]).FindProperty("_prefix").stringValue = enumNames[i];
 
-                            UnityEditor.EditorUtility.SetDirty(_arrayOfConfiguretionFile[j]);
+                            EditorUtility.SetDirty(_arrayOfConfiguretionFile[j]);
                         }
                     }
                 }
             }
 
-            UnityEditor.AssetDatabase.SaveAssets();
-            UnityEditor.AssetDatabase.Refresh();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
 
 #endif

@@ -27,7 +27,7 @@
 
         private static Vector2 _scrollPosition;
 
-        private const string _defaultName = "NewConfiguretionFileForCoreConsole";
+        private const string _defaultName = "NewCoreConsoleAsset";
         private static string _nameOfConfiguretorFile = _defaultName;
 
         private static GUIStyle HeighlightedBackgroundWithBoldStyle = new GUIStyle();
@@ -111,9 +111,9 @@
 
                     SerializedObject serializedCoreConsoleAsset = new SerializedObject(coreConsoleConfigFile);
 
-                    SerializedProperty _isUsedByCentralCoreConsole = serializedCoreConsoleAsset.FindProperty("_isUsedByCentralCoreConsole");
-                    _isUsedByCentralCoreConsole.boolValue = false;
-                    _isUsedByCentralCoreConsole.serializedObject.ApplyModifiedProperties();
+                    SerializedProperty _isLinkedWithDefaultSetting = serializedCoreConsoleAsset.FindProperty("_isLinkedWithDefaultSetting");
+                    _isLinkedWithDefaultSetting.boolValue = false;
+                    _isLinkedWithDefaultSetting.serializedObject.ApplyModifiedProperties();
 
                     serializedCoreConsoleAsset.ApplyModifiedProperties();
                 }
