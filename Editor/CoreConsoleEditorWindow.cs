@@ -378,25 +378,21 @@
             if (_gameConfiguretorOptionLabels == null)
                 _gameConfiguretorOptionLabels = new string[0];
 
-            int numberOfGameConfigLabled = _gameConfiguretorEnableStatus.Length;
 
+
+            string[] newLabel   = new string[numberOfConfiguretorAsset];
+            for (int i = 0; i < numberOfConfiguretorAsset; i++)
+            {
+                newLabel[i] = _listOfGameConfiguretorAsset[i].Prefix;
+            }
+            _gameConfiguretorOptionLabels = newLabel;
+
+
+
+            int numberOfGameConfigLabled = _gameConfiguretorEnableStatus.Length;
             if (numberOfConfiguretorAsset != numberOfGameConfigLabled)
             {
-
-                string[] newLabel = new string[numberOfConfiguretorAsset];
                 bool[] newEnableStatus = new bool[numberOfConfiguretorAsset];
-                for (int i = 0; i < numberOfConfiguretorAsset; i++)
-                {
-
-                    string prefix = _listOfGameConfiguretorAsset[i].Prefix;
-                    if (string.IsNullOrEmpty(prefix) || string.IsNullOrWhiteSpace(prefix))
-                    {
-                        prefix = _listOfGameConfiguretorAsset[i].name;
-                        CoreConsole.LogWarning("ScriptableObject name is assiged as prefix name as the 'prefix' field was empty : " + prefix);
-                    }
-                    newLabel[i] = prefix;
-                }
-
                 for (int i = 0; i < numberOfConfiguretorAsset; i++)
                 {
 
@@ -411,8 +407,6 @@
                         }
                     }
                 }
-
-                _gameConfiguretorOptionLabels = newLabel;
                 _gameConfiguretorEnableStatus = newEnableStatus;
             }
 
