@@ -259,15 +259,15 @@
                 {
 
                     case LogType.Log:
-                        color = gameConfigAsset.colorForLog;
+                        color = gameConfigAsset.ColorForLog;
                         break;
 
                     case LogType.Warning:
-                        color = gameConfigAsset.colorForWarning;
+                        color = gameConfigAsset.ColorForWarning;
                         break;
 
                     case LogType.Error:
-                        color = gameConfigAsset.colorForLogError;
+                        color = gameConfigAsset.ColorForLogError;
                         break;
                 }
                 string hexColor = CoreConsoleUtility.GetHexColorFromRGBColor(color);
@@ -389,14 +389,14 @@
 
 
 
-            int numberOfGameConfigLabled = _gameConfiguretorEnableStatus.Length;
-            if (numberOfConfiguretorAsset != numberOfGameConfigLabled)
+            int numberOfGameConfigEnableStatus = _gameConfiguretorEnableStatus.Length;
+            if (numberOfConfiguretorAsset != numberOfGameConfigEnableStatus)
             {
                 bool[] newEnableStatus = new bool[numberOfConfiguretorAsset];
                 for (int i = 0; i < numberOfConfiguretorAsset; i++)
                 {
 
-                    for (int j = 0; j < numberOfGameConfigLabled; j++)
+                    for (int j = 0; j < numberOfGameConfigEnableStatus; j++)
                     {
 
                         if (CoreConsoleUtility.IsSameString(newLabel[i], _gameConfiguretorOptionLabels[j]))
@@ -540,7 +540,7 @@
                                 {
                                     //if : Requested To Be True
                                     SerializedObject _soGameConfiguretorAsset = new SerializedObject(_listOfGameConfiguretorAsset[selectedIndex]);
-                                    SerializedProperty _spEnableStackTrace = _soGameConfiguretorAsset.FindProperty("_enableStackTrace");
+                                    SerializedProperty _spEnableStackTrace = _soGameConfiguretorAsset.FindProperty("_isStackTraceEnabled");
 
                                     if (!_spEnableStackTrace.boolValue)
                                     {
@@ -746,7 +746,7 @@
                 case LogType.Log:
                     show = _enableInfoLog;
 
-                    colorOfContent = gameConfigAsset.colorForLog;
+                    colorOfContent = gameConfigAsset.ColorForLog;
                     colorOfContent.a = 1;
 
                     GUIContentForLabel = _GUIContentForInfoLog;
@@ -755,7 +755,7 @@
                 case LogType.Warning:
                     show = _enableLogWarning;
 
-                    colorOfContent = gameConfigAsset.colorForWarning;
+                    colorOfContent = gameConfigAsset.ColorForWarning;
                     colorOfContent.a = 1;
 
                     GUIContentForLabel = _GUIContentForWarningLog;
@@ -764,7 +764,7 @@
                 case LogType.Error:
                     show = _enableLogError;
 
-                    colorOfContent = gameConfigAsset.colorForLogError;
+                    colorOfContent = gameConfigAsset.ColorForLogError;
                     colorOfContent.a = 1;
 
                     GUIContentForLabel = _GUIContentForErrorLog;

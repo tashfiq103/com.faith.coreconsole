@@ -82,7 +82,7 @@
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForWarning;
+                Color color = configuretionFile.ColorForWarning;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -106,7 +106,7 @@
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForWarning;
+                Color color = configuretionFile.ColorForWarning;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -129,12 +129,18 @@
         {
             CoreConsoleConfiguretionFile configuretionFile = CoreConsoleConfiguretionFileContainer.GetConfiguretionFile(configuretionFileID);
 
+            if (configuretionFile == null)
+            {
+                LogWarning(message);
+                return;
+            }
+
             if (configuretionFile.logType == CoreConsoleEnums.LogType.Verbose)
             {
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForWarning;
+                Color color = configuretionFile.ColorForWarning;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -155,12 +161,17 @@
         {
             CoreConsoleConfiguretionFile configuretionFile = CoreConsoleConfiguretionFileContainer.GetConfiguretionFile(configuretionFileID);
 
+            if (configuretionFile == null)
+            {
+                LogWarning(message, context);
+                return;
+            }
             if (configuretionFile.logType == CoreConsoleEnums.LogType.Verbose)
             {
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForWarning;
+                Color color = configuretionFile.ColorForWarning;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -243,7 +254,7 @@
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLog;
+                Color color = configuretionFile.ColorForLog;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -269,7 +280,7 @@
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLog;
+                Color color = configuretionFile.ColorForLog;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -292,12 +303,18 @@
 
             CoreConsoleConfiguretionFile configuretionFile = CoreConsoleConfiguretionFileContainer.GetConfiguretionFile(configuretionFileID);
 
+            if (configuretionFile == null)
+            {
+                Log(message);
+                return;
+            }
+
             if (configuretionFile.logType == CoreConsoleEnums.LogType.Verbose || configuretionFile.logType == CoreConsoleEnums.LogType.Info)
             {
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLog;
+                Color color = configuretionFile.ColorForLog;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -319,12 +336,18 @@
         {
             CoreConsoleConfiguretionFile configuretionFile = CoreConsoleConfiguretionFileContainer.GetConfiguretionFile(configuretionFileID);
 
+            if (configuretionFile == null)
+            {
+                Log(message, context);
+                return;
+            }
+
             if (configuretionFile.logType == CoreConsoleEnums.LogType.Verbose || configuretionFile.logType == CoreConsoleEnums.LogType.Info)
             {
 
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLog;
+                Color color = configuretionFile.ColorForLog;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -404,7 +427,7 @@
             {
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLogError;
+                Color color = configuretionFile.ColorForLogError;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -428,7 +451,7 @@
             {
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLogError;
+                Color color = configuretionFile.ColorForLogError;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -452,11 +475,17 @@
 
             CoreConsoleConfiguretionFile configuretionFile = CoreConsoleConfiguretionFileContainer.GetConfiguretionFile(configuretionFileID);
 
+            if (configuretionFile == null)
+            {
+                LogError(message);
+                return;
+            }
+
             if (configuretionFile.logType == CoreConsoleEnums.LogType.Verbose || configuretionFile.logType == CoreConsoleEnums.LogType.Info || configuretionFile.logType == CoreConsoleEnums.LogType.Error)
             {
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLogError;
+                Color color = configuretionFile.ColorForLogError;
                 if (color != new Color())
                 {
                     color.a = 1;
@@ -478,11 +507,17 @@
 
             CoreConsoleConfiguretionFile configuretionFile = CoreConsoleConfiguretionFileContainer.GetConfiguretionFile(configuretionFileID);
 
+            if (configuretionFile == null)
+            {
+                LogError(message, context);
+                return;
+            }
+
             if (configuretionFile.logType == CoreConsoleEnums.LogType.Verbose || configuretionFile.logType == CoreConsoleEnums.LogType.Info || configuretionFile.logType == CoreConsoleEnums.LogType.Error)
             {
                 string hexColorPrefix = "";
                 string hexColorPostfix = "";
-                Color color = configuretionFile.colorForLogError;
+                Color color = configuretionFile.ColorForLogError;
                 if (color != new Color())
                 {
                     color.a = 1;

@@ -9,7 +9,12 @@
     {
         #region Global
 
-        public static CoreConsoleEnums.LogType GlobalLogType = CoreConsoleEnums.LogType.Verbose;
+        public static CoreConsoleEnums.LogType GlobalLogType    = CoreConsoleEnums.LogType.Verbose;
+        public static bool  globalEnableStackTrace              = false;
+        public static int   globalNumberOfLog                   = 100;
+        public static Color globalColorForLog                   = Color.white;
+        public static Color globalColorForLogWarning            = Color.yellow;
+        public static Color globalColorForLogError              = Color.red;
 
         #endregion
 
@@ -20,12 +25,16 @@
 
         [SerializeField] private string _name;
         [SerializeField] private string _prefix = "";
-        [SerializeField] private bool _enableStackTrace;
-        [SerializeField, Range(10, 999)] private int _numberOfLog = 100;
-        [SerializeField] private LogType _clearLogType;
-        [SerializeField] private List<CoreConsole.DebugInfo> _listOfLogInfo = new List<CoreConsole.DebugInfo>();
 
         [SerializeField] private CoreConsoleEnums.LogType _logType = CoreConsoleEnums.LogType.Verbose;
+        [SerializeField] private bool _isStackTraceEnabled;
+        [SerializeField, Range(10, 999)] private int _numberOfLog = 100;
+        [SerializeField] private Color _colorForLog = Color.white;
+        [SerializeField] private Color _colorForWarning = Color.yellow;
+        [SerializeField] private Color _colorForLogError = Color.red;
+
+        [SerializeField] private LogType _clearLogType;
+        [SerializeField] private List<CoreConsole.DebugInfo> _listOfLogInfo = new List<CoreConsole.DebugInfo>();
 
         #endregion
 
@@ -33,19 +42,55 @@
 
 #if UNITY_EDITOR
 
-        
+
         public List<CoreConsole.DebugInfo> EditorListOfLogInfo { get { return _listOfLogInfo; } }
 
 #endif
 
-        public int NumberOfLog { get { return _listOfLogInfo.Count; } }
-        public CoreConsoleEnums.LogType logType { get { return _isLinkedWithDefaultSetting ? GlobalLogType : _logType; } }
-        public string Prefix { get { return _prefix; } }
+        
+        public string Prefix {
+            get {
+                return _prefix;
+            }
+        }
+        public CoreConsoleEnums.LogType logType {
+            get {
+                return _isLinkedWithDefaultSetting ? GlobalLogType : _logType;
+            }
+        }
+        public Color ColorForLog {
+            get {
+                return _isLinkedWithDefaultSetting ? globalColorForLog : _colorForLog;
+            }
+        }
+        public Color ColorForWarning
+        {
+            get
+            {
+                return _isLinkedWithDefaultSetting ? globalColorForLogWarning : _colorForWarning;
+            }
+        }
+        public Color ColorForLogError
+        {
+            get
+            {
+                return _isLinkedWithDefaultSetting ? globalColorForLogError : _colorForLogError;
+            }
+        }
 
-        public Color colorForLog = new Color();
-        public Color colorForWarning = Color.yellow;
-        public Color colorForLogError = Color.red;
+        public bool IsStackTraceEnabled
+        {
+            get {
+                return _isLinkedWithDefaultSetting ? globalEnableStackTrace : _isStackTraceEnabled;
+            }
+        }
+        public int NumberOfLog
+        {
+            get {
 
+                return _isLinkedWithDefaultSetting ? globalNumberOfLog : _numberOfLog;
+            }
+        }
         #endregion
 
         //--------------------
@@ -53,26 +98,21 @@
         //--------------------
         #region ScriptableObject
 
-#if UNITY_EDITOR
 
-
-#endif
         private void OnEnable()
         {
             
-            if (_enableStackTrace)
+            if (IsStackTraceEnabled)
             {
-                if (_listOfLogInfo == null) _listOfLogInfo = new List<CoreConsole.DebugInfo>();
-
-                Application.logMessageReceivedThreaded += LogMessageReciever;
+                EnableStackTrace();
             }
         }
 
         private void OnDisable()
         {
-            if (_enableStackTrace)
+            if (IsStackTraceEnabled)
             {
-                Application.logMessageReceivedThreaded -= LogMessageReciever;
+                DisableStackTrace();
             }
         }
 
@@ -87,18 +127,11 @@
         private void LogMessageReciever(string condition, string stackTrace, UnityEngine.LogType logType)
         {
 
-            //if (string.IsNullOrEmpty(_prefix) || string.IsNullOrWhiteSpace(_prefix))
-            //{
-            //    Debug.LogWarning(string.Format("No prefix was found for [{0}]_['{1}']. Assigning it's name as new prefix = {2}", CoreConsole.DEBUG_MESSAGE_PREFIX, _prefix, name));
-            //    _prefix = name;
-            //    return;
-            //}
-
             string filter = string.Format("{0}_[{1}]", CoreConsole.DEBUG_MESSAGE_PREFIX, _prefix);
             if (condition.Contains(filter))
             {
 
-                if (_listOfLogInfo.Count >= _numberOfLog)
+                if (_listOfLogInfo.Count >= NumberOfLog)
                     _listOfLogInfo.RemoveAt(0);
 
                 _listOfLogInfo.Add(new CoreConsole.DebugInfo()
@@ -118,6 +151,18 @@
         //Region Seperator
         //--------------------
         #region Public Callback
+
+
+        public void EnableStackTrace() {
+
+            if (_listOfLogInfo == null) _listOfLogInfo = new List<CoreConsole.DebugInfo>();
+            Application.logMessageReceivedThreaded += LogMessageReciever;
+        }
+
+        public void DisableStackTrace()
+        {
+            Application.logMessageReceivedThreaded -= LogMessageReciever;
+        }
 
         public void ClearAllLog()
         {

@@ -16,7 +16,7 @@
         private SerializedProperty _sp_isLinkedWithDefaultSetting;
 
         private SerializedProperty _sp_name;
-        private SerializedProperty _sp_enableStackTrace;
+        private SerializedProperty _sp_isStackTraceEnabled;
         private SerializedProperty _sp_numberOfLog;
         private SerializedProperty _sp_clearLogType;
         private SerializedProperty _sp_listOfLogInfo;
@@ -44,15 +44,16 @@
             _sp_isLinkedWithDefaultSetting = serializedObject.FindProperty("_isLinkedWithDefaultSetting");
 
             _sp_name = serializedObject.FindProperty("_name");
-            _sp_enableStackTrace = serializedObject.FindProperty("_enableStackTrace");
-            _sp_numberOfLog = serializedObject.FindProperty("_numberOfLog");
-            _sp_clearLogType = serializedObject.FindProperty("_clearLogType");
-            _sp_listOfLogInfo = serializedObject.FindProperty("_listOfLogInfo");
 
             _sp_logType = serializedObject.FindProperty("_logType");
-            _sp_colorForLog = serializedObject.FindProperty("colorForLog");
-            _sp_colorForLogWarning = serializedObject.FindProperty("colorForWarning");
-            _sp_colorForLogError = serializedObject.FindProperty("colorForLogError");
+            _sp_isStackTraceEnabled = serializedObject.FindProperty("_isStackTraceEnabled");
+            _sp_numberOfLog = serializedObject.FindProperty("_numberOfLog");
+            _sp_colorForLog = serializedObject.FindProperty("_colorForLog");
+            _sp_colorForLogWarning = serializedObject.FindProperty("_colorForWarning");
+            _sp_colorForLogError = serializedObject.FindProperty("_colorForLogError");
+
+            _sp_clearLogType = serializedObject.FindProperty("_clearLogType");
+            _sp_listOfLogInfo = serializedObject.FindProperty("_listOfLogInfo");
 
             EditorApplication.update += OnUpdate;
         }
@@ -105,8 +106,13 @@
                                                 isMarkedAsDefaultSetting.boolValue = false;
                                                 isMarkedAsDefaultSetting.serializedObject.ApplyModifiedProperties();
                                                 newSerializedObject.ApplyModifiedProperties();
+
+                                                EditorUtility.SetDirty(coreConsoleConfiguretionFile);
                                             }
                                         }
+
+                                        AssetDatabase.SaveAssets();
+                                        AssetDatabase.Refresh();
                                     }
                                 );
 
@@ -117,6 +123,14 @@
                                     {
                                         _sp_isLinkedWithDefaultSetting.boolValue = !_sp_isLinkedWithDefaultSetting.boolValue;
                                         _sp_isLinkedWithDefaultSetting.serializedObject.ApplyModifiedProperties();
+
+                                        if (_sp_isLinkedWithDefaultSetting.boolValue) {
+
+                                            if (CoreConsoleConfiguretionFile.globalEnableStackTrace)
+                                                _reference.EnableStackTrace();
+                                            else
+                                                _reference.DisableStackTrace();
+                                        }
                                     }
                                 );
 
@@ -156,11 +170,10 @@
                 }
                 if (EditorGUI.EndChangeCheck()) {
 
-                    if (_sp_isMarkedAsDefaultSetting.boolValue) {
-
-                        _sp_logType.serializedObject.ApplyModifiedProperties();
-                        CoreConsoleConfiguretionFile.GlobalLogType = (CoreConsoleEnums.LogType) _sp_logType.enumValueIndex;
-                    }
+                    _sp_logType.serializedObject.ApplyModifiedProperties();
+                    if (_sp_isMarkedAsDefaultSetting.boolValue) 
+                        CoreConsoleConfiguretionFile.GlobalLogType  = (CoreConsoleEnums.LogType) _sp_logType.enumValueIndex;
+                    
                 }
                 
                 EditorGUI.indentLevel += 1;
@@ -170,16 +183,76 @@
 
                         break;
                     case (int)CoreConsoleEnums.LogType.Error:
+
+                        EditorGUI.BeginChangeCheck();
                         EditorGUILayout.PropertyField(_sp_colorForLogError);
+                        if (EditorGUI.EndChangeCheck()) {
+
+                            _sp_colorForLogError.serializedObject.ApplyModifiedProperties();
+
+                            if (_sp_isMarkedAsDefaultSetting.boolValue)
+                                CoreConsoleConfiguretionFile.globalColorForLogError = _sp_colorForLogError.colorValue;
+                        }
+
                         break;
                     case (int)CoreConsoleEnums.LogType.Info:
+
+                        EditorGUI.BeginChangeCheck();
                         EditorGUILayout.PropertyField(_sp_colorForLog);
+                        if (EditorGUI.EndChangeCheck()) {
+
+                            _sp_colorForLog.serializedObject.ApplyModifiedProperties();
+
+                            if (_sp_isMarkedAsDefaultSetting.boolValue)
+                                CoreConsoleConfiguretionFile.globalColorForLog = _sp_colorForLog.colorValue;
+                        }
+
+                        EditorGUI.BeginChangeCheck();
                         EditorGUILayout.PropertyField(_sp_colorForLogError);
+                        if (EditorGUI.EndChangeCheck())
+                        {
+
+                            _sp_colorForLogError.serializedObject.ApplyModifiedProperties();
+
+                            if (_sp_isMarkedAsDefaultSetting.boolValue)
+                                CoreConsoleConfiguretionFile.globalColorForLogError = _sp_colorForLogError.colorValue;
+                        }
+
                         break;
                     case (int)CoreConsoleEnums.LogType.Verbose:
+
+                        EditorGUI.BeginChangeCheck();
                         EditorGUILayout.PropertyField(_sp_colorForLog);
+                        if (EditorGUI.EndChangeCheck())
+                        {
+
+                            _sp_colorForLog.serializedObject.ApplyModifiedProperties();
+
+                            if (_sp_isMarkedAsDefaultSetting.boolValue)
+                                CoreConsoleConfiguretionFile.globalColorForLog = _sp_colorForLog.colorValue;
+                        }
+
+                        EditorGUI.BeginChangeCheck();
                         EditorGUILayout.PropertyField(_sp_colorForLogWarning);
+                        if (EditorGUI.EndChangeCheck())
+                        {
+
+                            _sp_colorForLogWarning.serializedObject.ApplyModifiedProperties();
+
+                            if (_sp_isMarkedAsDefaultSetting.boolValue)
+                                CoreConsoleConfiguretionFile.globalColorForLogWarning = _sp_colorForLogWarning.colorValue;
+                        }
+
+                        EditorGUI.BeginChangeCheck();
                         EditorGUILayout.PropertyField(_sp_colorForLogError);
+                        if (EditorGUI.EndChangeCheck())
+                        {
+
+                            _sp_colorForLogError.serializedObject.ApplyModifiedProperties();
+
+                            if (_sp_isMarkedAsDefaultSetting.boolValue)
+                                CoreConsoleConfiguretionFile.globalColorForLogError = _sp_colorForLogError.colorValue;
+                        }
                         break;
                 }
 
@@ -189,23 +262,51 @@
                     CoreConsoleEditorUtility.DrawHorizontalLine();
 
                     EditorGUI.BeginChangeCheck();
-                    _sp_enableStackTrace.boolValue = EditorGUILayout.Foldout(
-                            _sp_enableStackTrace.boolValue,
+                    _sp_isStackTraceEnabled.boolValue = EditorGUILayout.Foldout(
+                            _sp_isStackTraceEnabled.boolValue,
                             "StackTrace",
                             true
                         );
                     if (EditorGUI.EndChangeCheck())
                     {
+                        _sp_isStackTraceEnabled.serializedObject.ApplyModifiedProperties();
 
-                        if (_sp_enableStackTrace.boolValue == false)
+                        if (_sp_isMarkedAsDefaultSetting.boolValue)
                         {
+                            CoreConsoleConfiguretionFile.globalEnableStackTrace = _sp_isStackTraceEnabled.boolValue;
+                            if (CoreConsoleConfiguretionFile.globalEnableStackTrace) {
 
+                                List<CoreConsoleConfiguretionFile> _listOfCoreConsoleConfiguretionFile = CoreConsoleEditorUtility.GetAsset<CoreConsoleConfiguretionFile>();
+                                foreach (CoreConsoleConfiguretionFile coreConsoleConfiguretionFile in _listOfCoreConsoleConfiguretionFile) {
+
+                                    SerializedObject serializedCoreConsoleConfiguretionAsset = new SerializedObject(coreConsoleConfiguretionFile);
+                                    SerializedProperty serailizedStackTrace = serializedCoreConsoleConfiguretionAsset.FindProperty("_isStackTraceEnabled");
+
+                                    serailizedStackTrace.boolValue = true;
+                                    serailizedStackTrace.serializedObject.ApplyModifiedProperties();
+                                    serializedCoreConsoleConfiguretionAsset.ApplyModifiedProperties();
+
+                                    EditorUtility.SetDirty(coreConsoleConfiguretionFile);
+                                }
+                            }
+
+                            AssetDatabase.SaveAssets();
+                            AssetDatabase.Refresh();
+                        }
+
+                        if (_sp_isStackTraceEnabled.boolValue)
+                        {
+                            _reference.EnableStackTrace();
+                        }
+                        else {
+
+                            _reference.DisableStackTrace();
                             _sp_listOfLogInfo.ClearArray();
                             _sp_listOfLogInfo.serializedObject.ApplyModifiedProperties();
                         }
                     }
 
-                    if (_sp_enableStackTrace.boolValue)
+                    if (_sp_isStackTraceEnabled.boolValue)
                     {
 
                         EditorGUI.indentLevel += 1;
@@ -231,7 +332,18 @@
                         EditorGUILayout.EndHorizontal();
 
                         if (!EditorApplication.isPlaying)
+                        {
+                            EditorGUI.BeginChangeCheck();
                             EditorGUILayout.PropertyField(_sp_numberOfLog);
+                            if (EditorGUI.EndChangeCheck()) {
+
+                                _sp_numberOfLog.serializedObject.ApplyModifiedProperties();
+
+                                if (_sp_isMarkedAsDefaultSetting.boolValue)
+                                    CoreConsoleConfiguretionFile.globalNumberOfLog = _sp_numberOfLog.intValue;
+                            }
+
+                        }
                         else
                             EditorGUILayout.LabelField("MaxLogSize : " + _sp_numberOfLog.intValue, EditorStyles.boldLabel);
 
@@ -295,6 +407,10 @@
                     {
                         _sp_isMarkedAsDefaultSetting.boolValue = false;
                         _sp_isMarkedAsDefaultSetting.serializedObject.ApplyModifiedProperties();
+
+                        EditorUtility.SetDirty(coreConsoleConfigFile);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
 
                         break;
                     }

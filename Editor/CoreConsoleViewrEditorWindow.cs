@@ -82,8 +82,13 @@
                         _linkWithCentralCoreConsole.serializedObject.ApplyModifiedProperties();
 
                         serializedCoreConsoleAsset.ApplyModifiedProperties();
+
+                        EditorUtility.SetDirty(coreConsoleConfigFile);
                     }
                 }
+
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
         }
 
@@ -103,9 +108,11 @@
                 }
             }
 
+            bool hasChanged = false;
             foreach (CoreConsoleConfiguretionFile coreConsoleConfigFile in _listOfCoreConsoleAsset)
             {
                 //if : It is the central game configuretor asset but not matched with the cashed production asset. Remove It From Prodcution
+                
                 if (new SerializedObject(coreConsoleConfigFile).FindProperty("_isMarkedAsDefaultSetting").boolValue && productionCoreConsoleAsset != coreConsoleConfigFile)
                 {
 
@@ -116,11 +123,21 @@
                     _isLinkedWithDefaultSetting.serializedObject.ApplyModifiedProperties();
 
                     serializedCoreConsoleAsset.ApplyModifiedProperties();
+
+                    EditorUtility.SetDirty(coreConsoleConfigFile);
+
+                    hasChanged = true;
                 }
             }
 
             _isFoldOut = new bool[_numberOfCoreConsoleAsset];
             _editorForCoreConsoleAsset = new Editor[_numberOfCoreConsoleAsset];
+
+            if (hasChanged)
+            {
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
         }
 
         private void CreateNewCoreConsoleAsset()
