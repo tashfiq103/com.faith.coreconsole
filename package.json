@@ -1,7 +1,7 @@
 {
     "name" : "com.faith.coreconsole",
     "displayName": "FAITH CoreConsole",
-    "version" : "0.1.0",
+    "version" : "1.0.0",
     "unity": "2020.1",
     "author": "Muhammad Tashfiqul Bari",
     "description": "CoreConsole for fitering and debugging different part of the game/app",

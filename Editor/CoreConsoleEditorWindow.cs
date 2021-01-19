@@ -36,9 +36,13 @@
 
         internal const float minHeightOfLogList = defaultConsoleHeight * minConsoleHeightRatioForLogList;
         internal const float minHeightOfLogInfo = defaultConsoleHeight * minConsoleHeightRatioForLogInfo;
-        
 
-        [SerializeField] private bool _isClearOnEnteringPlayMode;
+
+        internal Color oddBackgroundColor   = new Color(0.208f, 0.208f, 0.208f, 1f);
+        internal Color evenBackgroundColor  = new Color(0.247f, 0.247f, 0.247f, 1f);
+        internal Color selectedLogColor     = new Color(0.173f, 0.365f, 0.529f, 1f);
+
+        [SerializeField] private bool _isClearOnEnteringPlayMode = true;
         [SerializeField] private bool _isClearOnBuild;
 
         [SerializeField] private bool _errorPause;
@@ -74,6 +78,8 @@
 
         private GUIContent _GUIContentForLogMessage = new GUIContent();
 
+        private Texture2D _backgroundColorForLog;
+
         private string _searchText = "";
 
         private float _contentHeightForLogsInList = 30;
@@ -84,7 +90,6 @@
         private Vector2 _scrollPositionForListOfLog;
         private Vector2 _scrollPositionForLogMessage;
 
-        private Color _selectedLogColor;
         private Color defaultBackgroundColor;
         private Color defaultContentColor;
 
@@ -348,12 +353,14 @@
 
         private void UpdateGameConfiguretorAsset()
         {
+            
 
             _contentHeightForLogsInList = 30;
 
-            _selectedLogColor = new Color(125 / 255.0f, 195 / 255.0f, 255 / 255.0f, 1f);
+            
             defaultBackgroundColor = GUI.backgroundColor;
             defaultContentColor = GUI.contentColor;
+            
 
             _GUIContentForClearDropdownButton.image = EditorGUIUtility.IconContent("Icon Dropdown").image;
 
@@ -666,7 +673,7 @@
             {
                 _scrollPositionForListOfLog = EditorGUILayout.BeginScrollView(_scrollPositionForListOfLog);
                 {
-                    GUIStyle GUIStyleForLogDetail = new GUIStyle(EditorStyles.toolbarButton);
+                    GUIStyle GUIStyleForLogDetail = new GUIStyle(EditorStyles.label);
                     GUIStyleForLogDetail.alignment = TextAnchor.MiddleLeft;
                     GUIStyleForLogDetail.fontSize = 12;
                     GUIStyleForLogDetail.fixedHeight = _contentHeightForLogsInList;
@@ -715,6 +722,7 @@
                         }
                     }
 
+                    _backgroundColorForLog = new Texture2D(1, 1);
                     for (int i = 0; i < numberOfLog; i++)
                     {
                         if (string.IsNullOrEmpty(_searchText) || string.IsNullOrWhiteSpace(_searchText))
@@ -774,7 +782,15 @@
             if (show)
             {
 
-                EditorGUILayout.BeginHorizontal();
+                GUIStyleForLog.normal.textColor = colorOfContent;
+
+                _backgroundColorForLog.SetPixel(0, 0, IsSelectedLog(logIndex) ? selectedLogColor : ((logIndex % 2 == 0) ? evenBackgroundColor : oddBackgroundColor));
+                _backgroundColorForLog.Apply();
+
+                GUIStyle GUIStyleForLogBackground           = new GUIStyle(EditorStyles.label);
+                GUIStyleForLogBackground.normal.background  = _backgroundColorForLog;
+                
+                EditorGUILayout.BeginHorizontal(GUIStyleForLogBackground);
                 {
                     EditorGUILayout.LabelField(GUIContentForLabel, GUILayout.Width(_contentHeightForLogsInList), GUILayout.Height(_contentHeightForLogsInList));
 
@@ -793,19 +809,18 @@
 
                     finalCondition += condition;
 
-                    GUIStyleForLog.normal.textColor = colorOfContent;
-                    GUI.backgroundColor = IsSelectedLog(logIndex) ? _selectedLogColor : defaultBackgroundColor;
+                    
+
+                    //GUI.backgroundColor = IsSelectedLog(logIndex) ? _selectedLogColor : ((logIndex % 2 == 0)? evenBackgroundColor : oddBackgroundColor);
                     if (GUILayout.Button(finalCondition, GUIStyleForLog))
                     {
                         _selectedLogIndex = logIndex;
                         _selectedLogCondition = finalCondition;
                         _selectedLogStackTrace = debugInfo.stackTrace;
                     }
-                    GUI.backgroundColor = defaultBackgroundColor;
+                    //GUI.backgroundColor = defaultBackgroundColor;
                 }
                 EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.Space(5f);
 
             }
 
