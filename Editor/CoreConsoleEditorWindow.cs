@@ -163,9 +163,7 @@
 
         public void OnInspectorUpdate()
         {
-            Repaint();
-
-            
+            //Repaint();
 
         }
 
@@ -214,14 +212,11 @@
 
                 if (hasFoundErrorForSelectedLabel)
                 {
-
                     EditorApplication.isPaused = true;
                 }
-
-
             }
 
-
+            DrawLogListGUI();
         }
 
         #endregion
