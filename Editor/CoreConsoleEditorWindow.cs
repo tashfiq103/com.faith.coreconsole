@@ -216,7 +216,7 @@
                 }
             }
 
-            DrawLogListGUI();
+            Repaint();
         }
 
         #endregion
