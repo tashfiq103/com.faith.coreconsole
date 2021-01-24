@@ -215,8 +215,6 @@
                     EditorApplication.isPaused = true;
                 }
             }
-
-            Repaint();
         }
 
         #endregion
