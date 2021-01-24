@@ -137,9 +137,11 @@
                 if (_listOfLogInfo.Count >= NumberOfLog)
                     _listOfLogInfo.RemoveAt(0);
 
+                DateTime dateTimeNow = DateTime.Now;
                 _listOfLogInfo.Add(new CoreConsole.DebugInfo()
                 {
-                    timeStamp = DateTime.Now.ToString(),
+                    longTimeStamp = dateTimeNow.Ticks,
+                    timeStamp = dateTimeNow.ToString(),
                     prefix = _prefix,
                     condition = condition,
                     stackTrace = stackTrace,

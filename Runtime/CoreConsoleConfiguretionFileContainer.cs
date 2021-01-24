@@ -179,7 +179,8 @@
                 return _arrayOfConfiguretionFile[indexValue];
             }
 
-            CoreConsole.LogError(string.Format("Invalid Enum = {0} : ID = {1}", configuretionFileID, indexValue));
+            if(!configuretionFileID.ToString().Equals("none"))
+                CoreConsole.LogError(string.Format("Invalid Enum = {0} : ID = {1}", configuretionFileID, indexValue));
 
             return null;
         }

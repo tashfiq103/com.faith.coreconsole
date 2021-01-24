@@ -15,6 +15,7 @@
         [System.Serializable]
         public class DebugInfo
         {
+            public long     longTimeStamp;
             public string timeStamp;
             public string prefix;
             public string condition;
