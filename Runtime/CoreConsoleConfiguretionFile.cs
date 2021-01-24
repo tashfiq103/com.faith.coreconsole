@@ -20,6 +20,8 @@
 
         #region SerializedField
 
+        [SerializeField] private bool _isStackEventRegistered;
+
         [SerializeField] private bool _isMarkedAsDefaultSetting = false;
         [SerializeField] private bool _isLinkedWithDefaultSetting = false;
 
@@ -172,10 +174,12 @@
 
         public void EnableStackTrace() {
 
-            if (IsStackTraceEnabled) {
+            if (IsStackTraceEnabled && !_isStackEventRegistered) {
 
                 if (_listOfLogInfo == null) _listOfLogInfo = new List<CoreConsole.DebugInfo>();
+
                 Application.logMessageReceivedThreaded += LogMessageReciever;
+                _isStackEventRegistered = true;
             }
 
             
@@ -183,8 +187,11 @@
 
         public void DisableStackTrace()
         {
-            if (IsStackTraceEnabled)
+            if (IsStackTraceEnabled && _isStackEventRegistered)
+            {
                 Application.logMessageReceivedThreaded -= LogMessageReciever;
+                _isStackEventRegistered = false;
+            }
         }
 
         public void ClearAllLog()

@@ -215,6 +215,8 @@
                     EditorApplication.isPaused = true;
                 }
             }
+
+            Repaint();
         }
 
         #endregion
@@ -695,25 +697,25 @@
                     //Sorting
                     int numberOfLog = _listOfDebugInfo.Count;
 
-                    for (int i = 0; i < numberOfLog - 1; i++)
-                    {
+                    //for (int i = 0; i < numberOfLog - 1; i++)
+                    //{
 
-                        System.DateTime _DataTimeWithWhomeToCompare = System.Convert.ToDateTime(_listOfDebugInfo[i].debugInfo.timeStamp);
-                        for (int j = i + 1; j < numberOfLog; j++)
-                        {
+                    //    System.DateTime _DataTimeWithWhomeToCompare = System.Convert.ToDateTime(_listOfDebugInfo[i].debugInfo.timeStamp);
+                    //    for (int j = i + 1; j < numberOfLog; j++)
+                    //    {
 
-                            System.DateTime _DataTimeToCompare = System.Convert.ToDateTime(_listOfDebugInfo[j].debugInfo.timeStamp);
+                    //        System.DateTime _DataTimeToCompare = System.Convert.ToDateTime(_listOfDebugInfo[j].debugInfo.timeStamp);
 
-                            int compareValue = System.DateTime.Compare(_DataTimeWithWhomeToCompare, _DataTimeToCompare);
-                            if (compareValue > 0)
-                            {
+                    //        int compareValue = System.DateTime.Compare(_DataTimeWithWhomeToCompare, _DataTimeToCompare);
+                    //        if (compareValue > 0)
+                    //        {
 
-                                ConsoleDebugInfo tempValue = _listOfDebugInfo[i];
-                                _listOfDebugInfo[i] = _listOfDebugInfo[j];
-                                _listOfDebugInfo[j] = tempValue;
-                            }
-                        }
-                    }
+                    //            ConsoleDebugInfo tempValue = _listOfDebugInfo[i];
+                    //            _listOfDebugInfo[i] = _listOfDebugInfo[j];
+                    //            _listOfDebugInfo[j] = tempValue;
+                    //        }
+                    //    }
+                    //}
 
                     _backgroundColorForLog = new Texture2D(1, 1);
                     for (int i = 0; i < numberOfLog; i++)
