@@ -10,16 +10,18 @@
     {
         #region Custom Variables
 
-        private class ConsoleDebugInfo
+        [System.Serializable]
+        internal class ConfiguretionFileTracker
         {
-            internal CoreConsoleConfiguretionFile gameConfig;
-            internal CoreConsole.DebugInfo debugInfo;
+            [SerializeField] internal int configuretionFileIndex;
+            [SerializeField] internal int numberOfLog;
         }
 
+        [System.Serializable]
         internal class LogTracker
         {
-            internal int configuretionFileIndex;
-            internal int logIndex;
+            [SerializeField] internal int configuretionFileIndex;
+            [SerializeField] internal int logIndex;
         }
 
         #endregion
@@ -99,8 +101,8 @@
         private Color defaultBackgroundColor;
         private Color defaultContentColor;
 
-        private List<int> _listOfSelectedConfiguretionFile = new List<int>();
-
+        [SerializeField] private List<ConfiguretionFileTracker> _listOfConfiguretionFileTracker = new List<ConfiguretionFileTracker>();
+        [SerializeField] private List<LogTracker> _listOfLogTracker                             = new List<LogTracker>();
         #endregion
 
         #region Editor  :   Static
@@ -160,9 +162,7 @@
         {
             HeaderGUI();
 
-            //DrawLogListGUI();
-
-            DrawLogListGUIV2();
+            DrawLogListGUIV3();
 
             DrawLogMessageGUI();
 
@@ -171,8 +171,7 @@
 
         public void OnInspectorUpdate()
         {
-            //Repaint();
-
+            
         }
 
         public void OnDisable()
@@ -224,7 +223,7 @@
                 }
             }
 
-            Repaint();
+            TrackNewLogEntry();
         }
 
         #endregion
@@ -338,6 +337,8 @@
 
             foreach (CoreConsoleConfiguretionFile gameConfiguratorAsset in _listOfGameConfiguretorAsset)
                 gameConfiguratorAsset.ClearAllLog();
+
+            _listOfLogTracker.Clear();
         }
 
         private void LogPlayModeState(PlayModeStateChange state)
@@ -421,14 +422,8 @@
             }
 
             //Saving    :   The index of selected filter
-            _listOfSelectedConfiguretionFile = new List<int>();
-            for (int i = 0; i < numberOfGameConfigEnableStatus; i++) {
-
-                if (_gameConfiguretorEnableStatus[i]) {
-
-                    _listOfSelectedConfiguretionFile.Add(i);
-                }
-            }
+            UpdateSelectedConfiguretionFileForLogList();
+            SortLogList();
         }
 
         private void CreateCoreConsole()
@@ -446,6 +441,106 @@
 
             _listOfEditorWindowOfCoreConsole.Add(_editorWindowOfCoreConsole);
 
+        }
+
+        #endregion
+
+        #region Configuretion   :   LogList
+
+        private void UpdateSelectedConfiguretionFileForLogList() {
+
+
+            //Addressing    :   Selected ConfiguretionFile
+            _listOfConfiguretionFileTracker = new List<ConfiguretionFileTracker>();
+
+            int numberOfEnableStatusFlag  = _gameConfiguretorEnableStatus.Length;
+            for (int i = 0; i < numberOfEnableStatusFlag; i++)
+            {
+                if (_gameConfiguretorEnableStatus[i])
+                {
+                    _listOfConfiguretionFileTracker.Add(new ConfiguretionFileTracker()
+                    {
+                        configuretionFileIndex = i,
+                        numberOfLog = _listOfGameConfiguretorAsset[i].EditorListOfLogInfo.Count
+                    });
+                }
+            }
+
+            //Updating      :   LogTrackers
+            _listOfLogTracker = new List<LogTracker>();
+
+            int numberOfEnabledFilter = _listOfConfiguretionFileTracker.Count;
+            for (int i = 0; i < numberOfEnabledFilter; i++) {
+
+                int configuretionFileIndex = _listOfConfiguretionFileTracker[i].configuretionFileIndex;
+                int numberOfLog = _listOfGameConfiguretorAsset[configuretionFileIndex].EditorListOfLogInfo.Count;
+                for (int j = 0; j < numberOfLog; j++) {
+
+                    _listOfLogTracker.Add(new LogTracker()
+                    {
+
+                        configuretionFileIndex = configuretionFileIndex,
+                        logIndex = j
+                    });
+                }
+            }
+        }
+
+        private void SortLogList() {
+
+            int totalNumberOfLog = _listOfLogTracker.Count;
+            for (int i = 0; i < totalNumberOfLog - 1; i++)
+            {
+
+                for (int j = i + 1; j < totalNumberOfLog; j++)
+                {
+
+                    if (_listOfGameConfiguretorAsset[_listOfLogTracker[i].configuretionFileIndex].EditorListOfLogInfo[_listOfLogTracker[i].logIndex].longTimeStamp > _listOfGameConfiguretorAsset[_listOfLogTracker[j].configuretionFileIndex].EditorListOfLogInfo[_listOfLogTracker[j].logIndex].longTimeStamp)
+                    {
+
+                        LogTracker temp = _listOfLogTracker[i];
+                        _listOfLogTracker[i] = _listOfLogTracker[j];
+                        _listOfLogTracker[j] = temp;
+                    }
+                }
+            }
+        }
+
+        private void TrackNewLogEntry() {
+
+            int numberOfSelectedConfiguretionFile = _listOfConfiguretionFileTracker.Count;
+            for (int i = 0; i < numberOfSelectedConfiguretionFile; i++) {
+
+                int configuretionFileIndex  = _listOfConfiguretionFileTracker[i].configuretionFileIndex;
+                int trackedNumberOfLog      = _listOfConfiguretionFileTracker[i].numberOfLog;
+                int numberOfLog             = _listOfGameConfiguretorAsset[configuretionFileIndex].EditorListOfLogInfo.Count;
+
+                if (trackedNumberOfLog != numberOfLog) {
+                    //Miss-Match Found
+
+                    if (trackedNumberOfLog < numberOfLog)
+                    {
+                        //New Entry Found
+
+                        _listOfConfiguretionFileTracker[i].numberOfLog = numberOfLog;
+
+                        _listOfLogTracker.Add(new LogTracker()
+                        {
+                            configuretionFileIndex = configuretionFileIndex,
+                            logIndex = numberOfLog - 1
+                        });
+                        
+                    }
+                    else {
+                        //Got Cleared   :   Set Flag For Update & Sort
+
+                        UpdateSelectedConfiguretionFileForLogList();
+                        SortLogList();
+                    }
+                }
+            }
+
+            Repaint();
         }
 
         #endregion
@@ -677,152 +772,45 @@
             }
         }
 
-        private void DrawLogListGUIV2() {
+        private void DrawLogListGUIV3() {
+
+            _backgroundColorForLog = new Texture2D(1, 1);
 
             _heightOfLogList = position.height * minConsoleHeightRatioForLogList;
             _heightOfLogList = _heightOfLogList < minConsoleHeightRatioForLogList ? minConsoleHeightRatioForLogList : _heightOfLogList;
+
+            GUIStyle GUIStyleForLogDetail = new GUIStyle(EditorStyles.label);
+            GUIStyleForLogDetail.alignment = TextAnchor.MiddleLeft;
+            GUIStyleForLogDetail.fontSize = 12;
+            GUIStyleForLogDetail.fixedHeight = _contentHeightForLogsInList;
+
+
+            int totalNumberOfLog = _listOfLogTracker.Count;
+
             EditorGUILayout.BeginVertical(GUILayout.Height(_heightOfLogList));
             {
-                GUIStyle GUIStyleForLogDetail = new GUIStyle(EditorStyles.label);
-                GUIStyleForLogDetail.alignment = TextAnchor.MiddleLeft;
-                GUIStyleForLogDetail.fontSize = 12;
-                GUIStyleForLogDetail.fixedHeight = _contentHeightForLogsInList;
-
-                int totalNumberOfLog                    = 0;
-                int numberOfSelectedConfiguretionFile   = _listOfSelectedConfiguretionFile.Count;
-                List<LogTracker> logTracker             = new List<LogTracker>();
-                for (int i = 0; i < numberOfSelectedConfiguretionFile; i++) {
-
-                    int absoluteConfiguretionFileIndex = _listOfSelectedConfiguretionFile[i];
-                    int numberOfLog = _listOfGameConfiguretorAsset[absoluteConfiguretionFileIndex].EditorListOfLogInfo.Count;
-                    totalNumberOfLog += numberOfLog;
-                    for (int j = 0; j < numberOfLog; j++) {
-
-                        logTracker.Add(new LogTracker()
-                        {
-
-                            configuretionFileIndex = absoluteConfiguretionFileIndex,
-                            logIndex = j
-                        });
-                    }
-                }
-
-                for (int i = 0; i < totalNumberOfLog - 1; i++) {
-
-                    for (int j = i + 1; j < totalNumberOfLog; j++) {
-
-                        if (_listOfGameConfiguretorAsset[logTracker[i].configuretionFileIndex].EditorListOfLogInfo[logTracker[i].logIndex].longTimeStamp > _listOfGameConfiguretorAsset[logTracker[j].configuretionFileIndex].EditorListOfLogInfo[logTracker[j].logIndex].longTimeStamp) {
-
-                            LogTracker temp = logTracker[i];
-                            logTracker[i] = logTracker[j];
-                            logTracker[j] = temp;
-                        }
-                    }
-                }
-
-                _backgroundColorForLog = new Texture2D(1, 1);
+                
                 _scrollPositionForListOfLog = EditorGUILayout.BeginScrollView(_scrollPositionForListOfLog);
                 {
-                    for (int i = 0; i < totalNumberOfLog - 1; i++) {
-
+                    for (int i = 0; i < totalNumberOfLog - 1; i++)
+                    {
                         if (string.IsNullOrEmpty(_searchText) || string.IsNullOrWhiteSpace(_searchText))
-                            DrawLog(
-                                _listOfGameConfiguretorAsset[logTracker[i].configuretionFileIndex],
-                                GUIStyleForLogDetail,
-                                _listOfGameConfiguretorAsset[logTracker[i].configuretionFileIndex].EditorListOfLogInfo[logTracker[i].logIndex],
-                                i);
-                        else if (_listOfGameConfiguretorAsset[logTracker[i].configuretionFileIndex].EditorListOfLogInfo[logTracker[i].logIndex].condition.Contains(_searchText))
                         {
                             DrawLog(
-                                _listOfGameConfiguretorAsset[logTracker[i].configuretionFileIndex],
+                                _listOfGameConfiguretorAsset[_listOfLogTracker[i].configuretionFileIndex],
                                 GUIStyleForLogDetail,
-                                _listOfGameConfiguretorAsset[logTracker[i].configuretionFileIndex].EditorListOfLogInfo[logTracker[i].logIndex],
+                                _listOfGameConfiguretorAsset[_listOfLogTracker[i].configuretionFileIndex].EditorListOfLogInfo[_listOfLogTracker[i].logIndex],
+                                i);
+                        }
+                        else if (_listOfGameConfiguretorAsset[_listOfLogTracker[i].configuretionFileIndex].EditorListOfLogInfo[_listOfLogTracker[i].logIndex].condition.Contains(_searchText))
+                        {
+                            DrawLog(
+                                _listOfGameConfiguretorAsset[_listOfLogTracker[i].configuretionFileIndex],
+                                GUIStyleForLogDetail,
+                                _listOfGameConfiguretorAsset[_listOfLogTracker[i].configuretionFileIndex].EditorListOfLogInfo[_listOfLogTracker[i].logIndex],
                                 i);
                         }
                     }
-                }
-                EditorGUILayout.EndScrollView();
-            }
-            EditorGUILayout.EndVertical();
-        }
-
-        private void DrawLogListGUI()
-        {
-            _heightOfLogList = position.height * minConsoleHeightRatioForLogList;
-            _heightOfLogList = _heightOfLogList < minConsoleHeightRatioForLogList ? minConsoleHeightRatioForLogList : _heightOfLogList;
-            EditorGUILayout.BeginVertical(GUILayout.Height(_heightOfLogList));
-            {
-                _scrollPositionForListOfLog = EditorGUILayout.BeginScrollView(_scrollPositionForListOfLog);
-                {
-                    GUIStyle GUIStyleForLogDetail = new GUIStyle(EditorStyles.label);
-                    GUIStyleForLogDetail.alignment = TextAnchor.MiddleLeft;
-                    GUIStyleForLogDetail.fontSize = 12;
-                    GUIStyleForLogDetail.fixedHeight = _contentHeightForLogsInList;
-
-                    List<ConsoleDebugInfo> _listOfDebugInfo = new List<ConsoleDebugInfo>();
-
-                    int numberOfGameConfiguretorAsset = _listOfGameConfiguretorAsset.Count;
-                    for (int i = 0; i < numberOfGameConfiguretorAsset; i++)
-                    {
-
-                        if (_gameConfiguretorEnableStatus[i])
-                        {
-
-                            foreach (CoreConsole.DebugInfo debugInfo in _listOfGameConfiguretorAsset[i].EditorListOfLogInfo)
-                            {
-
-                                _listOfDebugInfo.Add(new ConsoleDebugInfo()
-                                {
-                                    gameConfig = _listOfGameConfiguretorAsset[i],
-                                    debugInfo = debugInfo
-                                });
-                            }
-                        }
-                    }
-
-                    //Sorting
-                    int numberOfLog = _listOfDebugInfo.Count;
-
-                    //#INEFFICIENT
-                    //for (int i = 0; i < numberOfLog - 1; i++)
-                    //{
-
-                    //    System.DateTime _DataTimeWithWhomeToCompare = System.Convert.ToDateTime(_listOfDebugInfo[i].debugInfo.timeStamp);
-                    //    for (int j = i + 1; j < numberOfLog; j++)
-                    //    {
-
-                    //        System.DateTime _DataTimeToCompare = System.Convert.ToDateTime(_listOfDebugInfo[j].debugInfo.timeStamp);
-
-                    //        int compareValue = System.DateTime.Compare(_DataTimeWithWhomeToCompare, _DataTimeToCompare);
-                    //        if (compareValue > 0)
-                    //        {
-
-                    //            ConsoleDebugInfo tempValue = _listOfDebugInfo[i];
-                    //            _listOfDebugInfo[i] = _listOfDebugInfo[j];
-                    //            _listOfDebugInfo[j] = tempValue;
-                    //        }
-                    //    }
-                    //}
-
-                    //#THIS IS NOT THE PROBLEM. Covert.DateTime is the problem
-                    //for (int i = 0; i < numberOfLog - 1; i++)
-                    //{
-
-                    //    for (int j = i + 1; j < numberOfLog; j++)
-                    //    {
-                    //    }
-                    //}
-
-                    _backgroundColorForLog = new Texture2D(1, 1);
-                    for (int i = 0; i < numberOfLog; i++)
-                    {
-                        if (string.IsNullOrEmpty(_searchText) || string.IsNullOrWhiteSpace(_searchText))
-                            DrawLog(_listOfDebugInfo[i].gameConfig, GUIStyleForLogDetail, _listOfDebugInfo[i].debugInfo, i);
-                        else if(_listOfDebugInfo[i].debugInfo.condition.Contains(_searchText)){
-                            DrawLog(_listOfDebugInfo[i].gameConfig, GUIStyleForLogDetail, _listOfDebugInfo[i].debugInfo, i);
-                        }
-                    }
-
                 }
                 EditorGUILayout.EndScrollView();
             }
