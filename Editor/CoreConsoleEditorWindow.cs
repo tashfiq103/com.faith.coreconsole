@@ -774,25 +774,27 @@
 
         private void DrawLogListGUIV3() {
 
-            _backgroundColorForLog = new Texture2D(1, 1);
-
-            _heightOfLogList = position.height * minConsoleHeightRatioForLogList;
-            _heightOfLogList = _heightOfLogList < minConsoleHeightRatioForLogList ? minConsoleHeightRatioForLogList : _heightOfLogList;
-
-            GUIStyle GUIStyleForLogDetail = new GUIStyle(EditorStyles.label);
-            GUIStyleForLogDetail.alignment = TextAnchor.MiddleLeft;
-            GUIStyleForLogDetail.fontSize = 12;
-            GUIStyleForLogDetail.fixedHeight = _contentHeightForLogsInList;
-
-
-            int totalNumberOfLog = _listOfLogTracker.Count;
+            Debug.LogWarning(string.Format("NumberOfLog = {0}", _listOfLogTracker.Count));
 
             EditorGUILayout.BeginVertical(GUILayout.Height(_heightOfLogList));
             {
                 
                 _scrollPositionForListOfLog = EditorGUILayout.BeginScrollView(_scrollPositionForListOfLog);
                 {
-                    for (int i = 0; i < totalNumberOfLog - 1; i++)
+                    _backgroundColorForLog = new Texture2D(1, 1);
+
+                    _heightOfLogList = position.height * minConsoleHeightRatioForLogList;
+                    _heightOfLogList = _heightOfLogList < minConsoleHeightRatioForLogList ? minConsoleHeightRatioForLogList : _heightOfLogList;
+
+                    GUIStyle GUIStyleForLogDetail = new GUIStyle(EditorStyles.label);
+                    GUIStyleForLogDetail.alignment = TextAnchor.MiddleLeft;
+                    GUIStyleForLogDetail.fontSize = 12;
+                    GUIStyleForLogDetail.fixedHeight = _contentHeightForLogsInList;
+
+
+                    int totalNumberOfLog = _listOfLogTracker.Count;
+
+                    for (int i = 0; i < totalNumberOfLog; i++)
                     {
                         if (string.IsNullOrEmpty(_searchText) || string.IsNullOrWhiteSpace(_searchText))
                         {
