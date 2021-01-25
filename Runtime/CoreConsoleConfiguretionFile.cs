@@ -30,7 +30,7 @@
 
         [SerializeField] private CoreConsoleEnums.LogType _logType = CoreConsoleEnums.LogType.Verbose;
         [SerializeField] private bool _isStackTraceEnabled;
-        [SerializeField, Range(10, 999)] private int _numberOfLog = 100;
+        [SerializeField, Range(10, 333)] private int _numberOfLog = 100;
         [SerializeField] private Color _colorForLog = Color.white;
         [SerializeField] private Color _colorForWarning = Color.yellow;
         [SerializeField] private Color _colorForLogError = Color.red;

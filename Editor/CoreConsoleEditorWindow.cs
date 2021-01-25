@@ -36,8 +36,8 @@
 
         internal static List<CoreConsoleEditorWindow> _listOfEditorWindowOfCoreConsole;
         internal static List<CoreConsoleConfiguretionFile> _listOfGameConfiguretorAsset = new List<CoreConsoleConfiguretionFile>();
-        internal const float defaultConsoleWidth = 480f;
-        internal const float defaultConsoleHeight= 480f;
+        internal const float defaultConsoleWidth            = 480f;
+        internal const float defaultConsoleHeight           = 480f;
 
         internal const float minConsoleHeightRatioForLogList = 0.7f;
         internal const float minConsoleHeightRatioForLogInfo = 0.3f;
@@ -774,8 +774,6 @@
 
         private void DrawLogListGUIV3() {
 
-            Debug.LogWarning(string.Format("NumberOfLog = {0}", _listOfLogTracker.Count));
-
             EditorGUILayout.BeginVertical(GUILayout.Height(_heightOfLogList));
             {
                 
@@ -815,6 +813,7 @@
                     }
                 }
                 EditorGUILayout.EndScrollView();
+
             }
             EditorGUILayout.EndVertical();
         }
