@@ -144,7 +144,7 @@
 
 #endif
 
-        [RuntimeInitializeOnLoadMethod()]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         public static void FetchCoreConsoleConfiguretionFile()
         {
             _arrayOfConfiguretionFile = Resources.LoadAll<CoreConsoleConfiguretionFile>("ConfiguretionFile");
